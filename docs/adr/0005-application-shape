@@ -1,0 +1,5 @@
+Gester is a local web application with a React client and Python server.
+
+The server may expose development or validation entry points, but the CLI is not the primary user interface.
+
+Core application behavior should live in application services and should be callable from web routes, background jobs, tests, or temporary CLI adapters.
