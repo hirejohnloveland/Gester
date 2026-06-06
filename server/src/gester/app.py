@@ -4,6 +4,11 @@ from gester.application.ingestion.rss_ingestion_service import RssIngestionServi
 from gester.application.responses.source_item_response import SourceItemResponse
 from gester.infrastructure.storage.sqlite.sqlite_db import initialize_database
 from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
+from gester.application.ingestion.source_item_chunking_service import SourceItemChunkingService
+from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
+from gester.application.ingestion.chunk_embedding_service import ChunkEmbeddingService
+from gester.application.retrieval.search_service import SearchService
+from gester.infrastructure.llm.ollama_client import OllamaClient
 
 app = FastAPI(title="Gester API")
 
@@ -36,3 +41,50 @@ def main() -> None:
         port=8000,
         reload=True,
     )
+
+@app.post("/process/chunks")
+def process_chunks():
+    service = SourceItemChunkingService()
+    chunked_item_count = service.chunk_missing_source_items()
+
+    return {"chunked_item_count": chunked_item_count}
+
+@app.get("/items/{item_id}/chunks")
+def get_chunks(item_id: int):
+    repository = SourceItemChunkRepository()
+
+    return repository.get_by_source_item_id(item_id)
+
+@app.post("/process/embeddings")
+def process_embeddings():
+    service = ChunkEmbeddingService()
+
+    embedded_count = service.embed_missing_chunks()
+
+    return {
+        "embedded_count": embedded_count
+    }
+
+@app.get("/search")
+def search(
+    query: str,
+    limit: int = 5,
+    min_score: float = 0.6,
+    dedupe_by_article: bool = True,
+):
+    service = SearchService()
+
+    results = service.search(query, limit, min_score, dedupe_by_article)
+
+    return results
+
+@app.get("/llm/test")
+def test_llm(prompt: str = "Say hello from Gester.") -> dict[str, str]:
+    client = OllamaClient()
+
+    response = client.generate(prompt)
+
+    return {
+        "prompt": prompt,
+        "response": response,
+    }

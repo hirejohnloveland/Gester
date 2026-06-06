@@ -43,3 +43,15 @@ class SourceItemRepository:
             session.refresh(item)
 
             return item
+    
+    def get_all_with_content(self) -> list[SourceItemEntity]:
+        with SessionLocal() as session:
+            statement = select(SourceItemEntity).where(
+                SourceItemEntity.raw_content.is_not(None)
+            )
+
+            return list(session.scalars(statement).all())
+    
+    def get_by_id(self, source_item_id: int) -> SourceItemEntity | None:
+        with SessionLocal() as session:
+            return session.get(SourceItemEntity, source_item_id)
