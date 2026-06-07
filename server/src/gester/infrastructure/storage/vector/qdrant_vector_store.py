@@ -58,3 +58,12 @@ class QdrantVectorStore:
         )
 
         return response.points
+
+    def clear_collection(self) -> None:
+        collections = self._client.get_collections().collections
+        collection_names = {collection.name for collection in collections}
+
+        if self._collection_name in collection_names:
+            self._client.delete_collection(collection_name=self._collection_name)
+
+        self.ensure_collection()

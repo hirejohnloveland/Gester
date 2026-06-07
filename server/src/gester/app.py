@@ -9,6 +9,7 @@ from gester.infrastructure.storage.sqlite.source_item_chunk_repository import So
 from gester.application.ingestion.chunk_embedding_service import ChunkEmbeddingService
 from gester.application.retrieval.search_service import SearchService
 from gester.infrastructure.llm.ollama_client import OllamaClient
+from gester.application.retrieval.answer_service import AnswerService
 
 app = FastAPI(title="Gester API")
 
@@ -56,13 +57,14 @@ def get_chunks(item_id: int):
     return repository.get_by_source_item_id(item_id)
 
 @app.post("/process/embeddings")
-def process_embeddings():
+def process_embeddings(rebuild: bool = False):
     service = ChunkEmbeddingService()
 
-    embedded_count = service.embed_missing_chunks()
+    embedded_count = service.embed_chunks(rebuild=rebuild)
 
     return {
-        "embedded_count": embedded_count
+        "embedded_count": embedded_count,
+        "rebuild": rebuild,
     }
 
 @app.get("/search")
@@ -78,13 +80,12 @@ def search(
 
     return results
 
-@app.get("/llm/test")
-def test_llm(prompt: str = "Say hello from Gester.") -> dict[str, str]:
-    client = OllamaClient()
+@app.get("/ask")
+def ask(
+    question: str,
+    limit: int = 5,
+    min_score: float = 0.6,
+):
+    service = AnswerService()
 
-    response = client.generate(prompt)
-
-    return {
-        "prompt": prompt,
-        "response": response,
-    }
+    return service.answer(question, limit, min_score)

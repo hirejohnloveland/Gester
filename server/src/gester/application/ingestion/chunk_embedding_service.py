@@ -1,29 +1,54 @@
 from gester.infrastructure.embeddings.embedding_service import EmbeddingService
 from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
 from gester.infrastructure.storage.vector.qdrant_vector_store import QdrantVectorStore
+from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
 
 
 class ChunkEmbeddingService:
     def __init__(self) -> None:
         self._chunk_repository = SourceItemChunkRepository()
+        self._source_item_repository = SourceItemRepository()
         self._embedding_service = EmbeddingService()
         self._vector_store = QdrantVectorStore()
 
-    def embed_missing_chunks(self) -> int:
-        chunks = self._chunk_repository.get_unembedded_chunks()
+    def embed_chunks(self, rebuild: bool = False) -> int:
+        if rebuild:
+            self._vector_store.clear_collection()
+            chunks = self._chunk_repository.get_all()
+        else:
+            chunks = self._chunk_repository.get_missing_embeddings()
 
         embedded_count = 0
 
         for chunk in chunks:
-            embedding = self._embedding_service.generate_embedding(chunk.chunk_text)
+            was_embedded = self._embed_chunk(chunk)
 
-            self._vector_store.upsert_chunk_embedding(
-                chunk_id=chunk.id,
-                source_item_id=chunk.source_item_id,
-                embedding=embedding,
-            )
-
-            self._chunk_repository.mark_embedded(chunk.id)
-            embedded_count += 1
+            if was_embedded:
+                self._chunk_repository.mark_embedded(chunk.id)
+                embedded_count += 1
 
         return embedded_count
+
+    def _embed_chunk(self, chunk) -> bool:
+        source_item = self._source_item_repository.get_by_id(chunk.source_item_id)
+
+        if source_item is None:
+            return False
+
+        embedding_text = self._build_embedding_text(source_item, chunk)
+        embedding = self._embedding_service.generate_embedding(embedding_text)
+
+        self._vector_store.upsert_chunk_embedding(
+            chunk_id=chunk.id,
+            source_item_id=source_item.id,
+            embedding=embedding,
+        )
+
+        return True
+
+    def _build_embedding_text(self, source_item, chunk) -> str:
+        return (
+            f"Title: {source_item.title}\n"
+            f"URL: {source_item.url}\n\n"
+            f"{chunk.chunk_text}"
+        )

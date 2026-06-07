@@ -62,3 +62,11 @@ class SourceItemChunkRepository:
     def get_by_id(self, chunk_id: int) -> SourceItemChunkEntity | None:
             with SessionLocal() as session:
                 return session.get(SourceItemChunkEntity, chunk_id)
+
+    def get_all(self) -> list[SourceItemChunkEntity]:
+        with SessionLocal() as session:
+            return (
+                session.query(SourceItemChunkEntity)
+                .order_by(SourceItemChunkEntity.id)
+                .all()
+            )
