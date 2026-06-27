@@ -10,6 +10,7 @@ from gester.application.ingestion.chunk_embedding_service import ChunkEmbeddingS
 from gester.application.retrieval.search_service import SearchService
 from gester.infrastructure.llm.ollama_client import OllamaClient
 from gester.application.retrieval.answer_service import AnswerService
+from gester.application.responses.answer_response import AnswerResponse
 
 app = FastAPI(title="Gester API")
 
@@ -22,7 +23,9 @@ def startup() -> None:
 @app.get("/items", response_model=list[SourceItemResponse])
 def get_items():
     repository = SourceItemRepository()
-    return repository.get_all()
+    items = repository.get_all()
+
+    return [SourceItemResponse.model_validate(item) for item in items]
 
 
 @app.post("/ingest/rss")
@@ -80,7 +83,7 @@ def search(
 
     return results
 
-@app.get("/ask")
+@app.get("/ask", response_model=AnswerResponse)
 def ask(
     question: str,
     limit: int = 5,

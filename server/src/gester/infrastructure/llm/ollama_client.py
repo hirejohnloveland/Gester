@@ -5,7 +5,9 @@ class OllamaClient:
     def __init__(
         self,
         base_url: str = "http://localhost:11434",
+        # model: str = "hf.co/unsloth/gemma-4-12b-it-GGUF:UD-Q6_K_XL",
         model: str = "qwen2.5:7b-instruct",
+
     ) -> None:
         self._base_url = base_url.rstrip("/")
         self._model = model

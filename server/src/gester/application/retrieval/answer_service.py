@@ -1,3 +1,5 @@
+import time
+
 from gester.application.retrieval.search_service import SearchService
 from gester.infrastructure.llm.ollama_client import OllamaClient
 
@@ -13,37 +15,58 @@ class AnswerService:
         limit: int = 5,
         min_score: float = 0.6,
     ) -> dict:
+        total_start = time.perf_counter()
+
+        search_start = time.perf_counter()
         search_results = self._search_service.search(
             query=question,
             limit=limit,
             min_score=min_score,
             dedupe_by_article=True,
         )
+        search_ms = (time.perf_counter() - search_start) * 1000
 
         if not search_results:
-            return self._build_no_evidence_response(question)
+            return self._build_no_evidence_response(
+                question,
+                search_ms=search_ms,
+                total_start=total_start,
+            )
 
         if not self._has_direct_text_evidence(question, search_results):
-            return self._build_no_evidence_response(question, search_results)
+            return self._build_no_evidence_response(
+                question,
+                search_results,
+                search_ms=search_ms,
+                total_start=total_start,
+            )
 
         context = self._build_context(search_results)
         prompt = self._build_prompt(question, context)
 
+        generation_start = time.perf_counter()
         answer_text = self._llm_client.generate(prompt)
+        generation_ms = (time.perf_counter() - generation_start) * 1000
 
         return {
             "question": question,
             "answer": answer_text,
             "sources": [
                 {
+                    "source_number": index,
                     "source_item_id": result.source_item_id,
                     "chunk_id": result.chunk_id,
                     "title": result.title,
                     "url": result.url,
                     "score": result.score,
                 }
-                for result in search_results
+                for index, result in enumerate(search_results, start=1)
             ],
+            "timing": self._build_timing(
+                search_ms=search_ms,
+                generation_ms=generation_ms,
+                total_start=total_start,
+            ),
         }
 
     def _build_context(self, search_results) -> str:
@@ -74,20 +97,48 @@ class AnswerService:
             "Answer:"
         )
 
-    def _build_no_evidence_response(self, question: str, search_results=None) -> dict:
+    def _build_no_evidence_response(
+        self,
+        question: str,
+        search_results=None,
+        *,
+        search_ms: float,
+        total_start: float,
+    ) -> dict:
         return {
             "question": question,
             "answer": "The stored sources do not provide enough information to answer this question.",
             "sources": [
                 {
+                    "source_number": index,
                     "source_item_id": result.source_item_id,
                     "chunk_id": result.chunk_id,
                     "title": result.title,
                     "url": result.url,
                     "score": result.score,
                 }
-                for result in (search_results or [])
+                for index, result in enumerate(search_results or [], start=1)
             ],
+            "timing": self._build_timing(
+                search_ms=search_ms,
+                generation_ms=0.0,
+                total_start=total_start,
+            ),
+        }
+
+    def _build_timing(
+        self,
+        *,
+        search_ms: float,
+        generation_ms: float,
+        total_start: float,
+    ) -> dict:
+        total_ms = (time.perf_counter() - total_start) * 1000
+
+        return {
+            "search_ms": round(search_ms, 1),
+            "generation_ms": round(generation_ms, 1),
+            "total_ms": round(total_ms, 1),
         }
 
 

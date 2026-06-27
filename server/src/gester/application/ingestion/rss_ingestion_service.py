@@ -1,8 +1,8 @@
 from gester.application.ingestion.text_chunking_service import TextChunkingService
+from gester.domain.models.source_item import SourceItem
+from gester.domain.models.source_item_chunk import SourceItemChunk
 from gester.infrastructure.extraction.article_extractor import ArticleExtractor
 from gester.infrastructure.feeds.rss_reader import RssReader
-from gester.infrastructure.storage.sqlite.entities.source_item_chunk_entity import SourceItemChunkEntity
-from gester.infrastructure.storage.sqlite.entities.source_item_entity import SourceItemEntity
 from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
 from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
 
@@ -26,7 +26,7 @@ class RssIngestionService:
             if raw_content is None:
                 raw_content = rss_item.summary
 
-            entity = SourceItemEntity(
+            source_item = SourceItem(
                 source_type=rss_item.source_type,
                 title=rss_item.title,
                 url=rss_item.link,
@@ -34,16 +34,15 @@ class RssIngestionService:
                 published_at=rss_item.published_at,
             )
 
-            saved = self._repository.add_if_not_exists(entity)
+            saved = self._repository.add_if_not_exists(source_item)
 
             if saved is not None:
                 saved_count += 1
 
-
                 chunks = self._chunking_service.chunk(saved.raw_content)
 
                 for index, chunk in enumerate(chunks):
-                    chunk_entity = SourceItemChunkEntity(
+                    source_item_chunk = SourceItemChunk(
                         source_item_id=saved.id,
                         chunk_index=index,
                         chunk_text=chunk.chunk_text,
@@ -51,5 +50,6 @@ class RssIngestionService:
                         char_end=chunk.char_end,
                     )
 
-                    self._chunk_repository.add(chunk_entity)
+                    self._chunk_repository.add(source_item_chunk)
+
         return saved_count

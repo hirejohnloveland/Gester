@@ -2,25 +2,28 @@ from datetime import datetime, timezone
 
 from sqlalchemy import select, update
 
+from gester.domain.models.source_item_chunk import SourceItemChunk
 from gester.infrastructure.storage.sqlite.entities.source_item_chunk_entity import (
     SourceItemChunkEntity,
 )
+from gester.infrastructure.storage.sqlite.mappers import source_item_chunk_mapper
 from gester.infrastructure.storage.sqlite.sqlite_db import SessionLocal
 
 
 class SourceItemChunkRepository:
-    def add(self, chunk: SourceItemChunkEntity) -> SourceItemChunkEntity:
+    def add(self, chunk: SourceItemChunk) -> SourceItemChunk:
         with SessionLocal() as session:
-            session.add(chunk)
+            entity = source_item_chunk_mapper.to_entity(chunk)
+            session.add(entity)
             session.commit()
-            session.refresh(chunk)
+            session.refresh(entity)
 
-            return chunk
+            return source_item_chunk_mapper.to_domain(entity)
 
     def get_by_source_item_id(
         self,
         source_item_id: int,
-    ) -> list[SourceItemChunkEntity]:
+    ) -> list[SourceItemChunk]:
         with SessionLocal() as session:
             statement = (
                 select(SourceItemChunkEntity)
@@ -28,7 +31,10 @@ class SourceItemChunkRepository:
                 .order_by(SourceItemChunkEntity.chunk_index)
             )
 
-            return list(session.scalars(statement).all())
+            return [
+                source_item_chunk_mapper.to_domain(entity)
+                for entity in session.scalars(statement).all()
+            ]
 
     def exists_for_source_item_id(self, source_item_id: int) -> bool:
         with SessionLocal() as session:
@@ -38,7 +44,7 @@ class SourceItemChunkRepository:
 
             return session.scalars(statement).first() is not None
 
-    def get_unembedded_chunks(self) -> list[SourceItemChunkEntity]:
+    def get_unembedded_chunks(self) -> list[SourceItemChunk]:
         with SessionLocal() as session:
             statement = (
                 select(SourceItemChunkEntity)
@@ -46,7 +52,10 @@ class SourceItemChunkRepository:
                 .order_by(SourceItemChunkEntity.id)
             )
 
-            return list(session.scalars(statement).all())
+            return [
+                source_item_chunk_mapper.to_domain(entity)
+                for entity in session.scalars(statement).all()
+            ]
 
     def mark_embedded(self, chunk_id: int) -> None:
         with SessionLocal() as session:
@@ -58,15 +67,21 @@ class SourceItemChunkRepository:
 
             session.execute(statement)
             session.commit()
-    
-    def get_by_id(self, chunk_id: int) -> SourceItemChunkEntity | None:
-            with SessionLocal() as session:
-                return session.get(SourceItemChunkEntity, chunk_id)
 
-    def get_all(self) -> list[SourceItemChunkEntity]:
+    def get_by_id(self, chunk_id: int) -> SourceItemChunk | None:
         with SessionLocal() as session:
-            return (
-                session.query(SourceItemChunkEntity)
-                .order_by(SourceItemChunkEntity.id)
-                .all()
-            )
+            entity = session.get(SourceItemChunkEntity, chunk_id)
+
+            if entity is None:
+                return None
+
+            return source_item_chunk_mapper.to_domain(entity)
+
+    def get_all(self) -> list[SourceItemChunk]:
+        with SessionLocal() as session:
+            statement = select(SourceItemChunkEntity).order_by(SourceItemChunkEntity.id)
+
+            return [
+                source_item_chunk_mapper.to_domain(entity)
+                for entity in session.scalars(statement).all()
+            ]

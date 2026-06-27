@@ -1,5 +1,5 @@
 from gester.application.ingestion.text_chunking_service import TextChunkingService
-from gester.infrastructure.storage.sqlite.entities.source_item_chunk_entity import SourceItemChunkEntity
+from gester.domain.models.source_item_chunk import SourceItemChunk
 from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
 from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
 
@@ -22,7 +22,7 @@ class SourceItemChunkingService:
             chunks = self._chunking_service.chunk(source_item.raw_content)
 
             for index, chunk in enumerate(chunks):
-                chunk_entity = SourceItemChunkEntity(
+                source_item_chunk = SourceItemChunk(
                     source_item_id=source_item.id,
                     chunk_index=index,
                     chunk_text=chunk.chunk_text,
@@ -30,7 +30,7 @@ class SourceItemChunkingService:
                     char_end=chunk.char_end,
                 )
 
-                self._chunk_repository.add(chunk_entity)
+                self._chunk_repository.add(source_item_chunk)
 
             chunked_item_count += 1
 

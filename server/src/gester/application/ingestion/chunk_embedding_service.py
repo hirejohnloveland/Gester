@@ -16,7 +16,7 @@ class ChunkEmbeddingService:
             self._vector_store.clear_collection()
             chunks = self._chunk_repository.get_all()
         else:
-            chunks = self._chunk_repository.get_missing_embeddings()
+            chunks = self._chunk_repository.get_unembedded_chunks()
 
         embedded_count = 0
 

@@ -26,6 +26,11 @@ SessionLocal = sessionmaker(
 def initialize_database() -> None:
     DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
+    from gester.infrastructure.storage.sqlite.entities.source_item_chunk_entity import (
+        SourceItemChunkEntity,
+    )
     from gester.infrastructure.storage.sqlite.entities.source_item_entity import SourceItemEntity
+
+    _ = (SourceItemEntity, SourceItemChunkEntity)
 
     Base.metadata.create_all(bind=engine)
