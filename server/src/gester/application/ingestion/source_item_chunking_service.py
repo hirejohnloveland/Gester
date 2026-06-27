@@ -2,6 +2,7 @@ from gester.application.ingestion.text_chunking_service import TextChunkingServi
 from gester.domain.models.source_item_chunk import SourceItemChunk
 from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
 from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
+from gester.infrastructure.storage.vector.qdrant_vector_store import QdrantVectorStore
 
 
 class SourceItemChunkingService:
@@ -9,6 +10,7 @@ class SourceItemChunkingService:
         self._source_item_repository = SourceItemRepository()
         self._chunk_repository = SourceItemChunkRepository()
         self._chunking_service = TextChunkingService()
+        self._vector_store = QdrantVectorStore()
 
     def chunk_missing_source_items(self) -> int:
         source_items = self._source_item_repository.get_all_with_content()
@@ -35,3 +37,9 @@ class SourceItemChunkingService:
             chunked_item_count += 1
 
         return chunked_item_count
+
+    def reset_chunks(self) -> int:
+        deleted_chunk_count = self._chunk_repository.delete_all()
+        self._vector_store.clear_collection()
+
+        return deleted_chunk_count

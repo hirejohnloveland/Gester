@@ -14,16 +14,22 @@ SQLAlchemy entities carry ORM concerns (columns, relationships, session
 lifecycle). Domain models should remain free of persistence framework
 dependencies so application logic stays testable and readable.
 
+Domain models in this project are implemented as Pydantic `BaseModel`
+classes. They are used for validation and serialization, but carry no
+ORM mappings or database session awareness.
+
 ## Decision
 
 SQLite persistence follows a three-part pattern.
 
 ### Domain models (`domain/models/`)
 
-Plain Python objects representing business concepts.
+Pydantic `BaseModel` classes representing business concepts, free of
+persistence-framework concerns.
 
 - No SQLAlchemy imports
 - No database session awareness
+- Pydantic is used only for validation and serialization, not ORM mapping
 - Used by application services and returned to callers
 
 Examples: `SourceItem`, `SourceItemChunk`, `RssItem`, `TextChunk`.
@@ -62,7 +68,7 @@ Repositories encapsulate all database access.
 - Domain and application layers stay persistence-agnostic
 - Database schema changes are localized to entities and mappers
 - Consistent pattern across all stored types
-- Easier unit testing of application services with plain domain objects
+- Easier unit testing of application services with domain models
 
 ### Tradeoffs
 

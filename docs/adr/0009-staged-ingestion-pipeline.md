@@ -27,25 +27,63 @@ application service with a single responsibility.
 3. **Embedding** — generate vectors for chunks and index them in Qdrant
    (`ChunkEmbeddingService`)
 
-Each stage reads from SQLite and writes its own outputs. Chunking and
-embedding do not re-fetch external source content.
+Chunking and embedding read from SQLite and do not re-fetch external
+source content.
+
+### Acquisition chunks inline as a convenience
+
+For the full-ingest path, `RssIngestionService` also chunks each article
+inline immediately after persisting it, so a single ingest call produces
+chunk-ready content without a second request.
+
+This is a deliberate convenience, not a violation of stage separation:
+the chunking logic is shared (`TextChunkingService`), and
+`SourceItemChunkingService` remains the authority for chunking existing
+content independently of acquisition.
+
+### Standalone chunking stage
+
+`SourceItemChunkingService` exists so that stored content can be
+(re)chunked **without re-fetching source articles**. Its primary value
+during retrieval development is iterating on chunk settings against
+already-acquired raw content.
+
+- `chunk_missing_source_items()` chunks any source item that has no chunks
+- `reset_chunks()` burns down all chunks and clears the derived vector
+  collection, then chunking can be re-run to regenerate chunks
 
 ### Idempotent processing
 
 Stages skip work already completed:
 
 - Acquisition skips items with duplicate URLs
-- Chunking skips source items that already have chunks
+- Standalone chunking skips source items that already have chunks
 - Embedding skips chunks already marked embedded (unless explicitly
   rebuilding)
 
 This allows stages to be re-run safely after partial failures or code
 changes.
 
+### Resetting chunks invalidates embeddings
+
+Vector points in Qdrant are keyed by chunk ID (ADR-0006). Deleting chunks
+without clearing their vectors would leave orphaned points. Therefore
+`reset_chunks()` deletes chunk rows in SQLite **and** clears the Qdrant
+collection in the same operation.
+
+The rechunk-and-re-embed loop during retrieval development is:
+
+```
+reset chunks (clears chunks + vectors) → rechunk → re-embed
+```
+
+Source items are never touched by this loop, so articles are not
+re-downloaded.
+
 ### Independent invocation
 
-Stages may be invoked independently. A later stage does not implicitly
-run earlier stages.
+Chunking, reset, and embedding may be invoked independently. They do not
+implicitly run one another.
 
 Orchestration (when to run each stage) is separate from stage logic.
 
@@ -68,9 +106,9 @@ Orchestration (when to run each stage) is separate from stage logic.
 
 ## Non-Goals
 
-- A monolithic ingest function that hides all stages
 - Runtime agents coordinating ingestion (ADR-0003)
 - Defining the permanent scheduling or trigger mechanism
+- Deleting source items as part of resetting chunks
 
 ## Deferred (see roadmap)
 

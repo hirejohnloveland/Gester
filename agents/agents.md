@@ -51,8 +51,9 @@ authoritative source instead.
 ## Project Structure
 
 Gester is a local web application with a Python server and a future
-React client (see ADR-0005). The server follows Domain / Application /
-Infrastructure layering (see ADR-0001).
+React client (see ADR-0005). The server follows Presentation (API) /
+Application / Domain / Infrastructure layering (see ADR-0001 and
+ADR-0005).
 
 ```
 Gester/
@@ -64,9 +65,11 @@ Gester/
 │   ├── coding-standards.md
 │   └── roadmap_v2.md    # Current roadmap
 ├── server/src/gester/
-│   ├── app.py           # FastAPI entry point and routes
+│   ├── app.py           # Composition root: creates app, includes routers, startup
+│   ├── api/routers/     # FastAPI APIRouter modules (content, ingestion, retrieval)
 │   ├── domain/models/   # Business concepts (SourceItem, SourceItemChunk, …)
 │   ├── application/     # Use cases and orchestration
+│   │   ├── content/     # Read/query services for stored items and chunks
 │   │   ├── ingestion/   # RSS ingestion, chunking, embedding
 │   │   ├── retrieval/   # Search and RAG answer services
 │   │   └── responses/   # API response models
@@ -80,6 +83,15 @@ Gester/
 └── requirements.txt
 ```
 
+### api (presentation)
+
+FastAPI `APIRouter` modules grouped by concern. Route handlers are thin:
+they call application services and map to response models. No business
+logic or direct infrastructure access. `app.py` is the composition root
+that includes the routers and runs startup.
+
+Current routers: `content_router`, `ingestion_router`, `retrieval_router`.
+
 ### domain
 
 Business concepts and models. No infrastructure dependencies.
@@ -91,7 +103,8 @@ Current examples: `SourceItem`, `SourceItemChunk`, `RssItem`, `TextChunk`.
 Use-case orchestration. Coordinates domain models and infrastructure.
 
 Current examples: `RssIngestionService`, `SourceItemChunkingService`,
-`ChunkEmbeddingService`, `SearchService`, `AnswerService`.
+`ChunkEmbeddingService`, `SearchService`, `AnswerService`,
+`SourceItemQueryService`, `SourceItemChunkQueryService`.
 
 ### infrastructure
 

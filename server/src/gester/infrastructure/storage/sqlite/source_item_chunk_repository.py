@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 
 from gester.domain.models.source_item_chunk import SourceItemChunk
 from gester.infrastructure.storage.sqlite.entities.source_item_chunk_entity import (
@@ -85,3 +85,10 @@ class SourceItemChunkRepository:
                 source_item_chunk_mapper.to_domain(entity)
                 for entity in session.scalars(statement).all()
             ]
+
+    def delete_all(self) -> int:
+        with SessionLocal() as session:
+            result = session.execute(delete(SourceItemChunkEntity))
+            session.commit()
+
+            return result.rowcount
