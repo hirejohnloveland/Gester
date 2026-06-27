@@ -6,6 +6,14 @@ These standards keep the Gester codebase understandable, maintainable, and easy 
 
 The goal is not to create excessive rules. The goal is to avoid large files, unclear responsibilities, hidden coupling, and unnecessary complexity.
 
+Authoritative project documentation:
+
+- `docs/roadmap_v2.md` — build plan and milestones
+- `docs/adr/` — architectural decisions
+- `agents/agents.md` — guardrails for AI coding assistants
+
+See ADR-0004 for how these documents relate to each other.
+
 ---
 
 ## General Principles

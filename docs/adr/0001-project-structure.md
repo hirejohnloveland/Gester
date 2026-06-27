@@ -22,10 +22,10 @@ Contains business concepts and models.
 
 Examples:
 
-- FeedSource
-- FeedItem
-- ArticleDocument
-- ArticleChunk
+- SourceItem
+- SourceItemChunk
+- RssItem
+- TextChunk
 
 ### Application
 
@@ -33,8 +33,11 @@ Contains use cases and orchestration logic.
 
 Examples:
 
-- IngestionPipeline
-- RetrievalPipeline
+- RssIngestionService
+- SourceItemChunkingService
+- ChunkEmbeddingService
+- SearchService
+- AnswerService
 
 ### Infrastructure
 
@@ -42,12 +45,12 @@ Contains implementation details.
 
 Examples:
 
-- RSS readers
-- HTML extraction
-- File storage
-- SQLite repositories
-- Qdrant integration
-- Embedding providers
+- RssReader
+- ArticleExtractor
+- EmbeddingService
+- QdrantVectorStore
+- OllamaClient
+- SQLite repositories and mappers
 
 ## Consequences
 

@@ -12,6 +12,14 @@ Many modern AI systems introduce agents early in development. While agents can p
 
 The project owner prefers explicit, understandable code and deterministic pipelines whenever possible.
 
+### Terminology
+
+This ADR governs **runtime agents** — autonomous in-app systems that decide their own steps (search again, fetch more content, change strategy, loop until done).
+
+It does **not** govern **AI coding assistants** (Cursor, Copilot, etc.). Those are constrained by `agents/agents.md` and ADR-0004.
+
+Using an LLM inside a fixed workflow is not a runtime agent. For example, a RAG answer service that always executes search → build prompt → generate → return is a deterministic pipeline with an LLM step, not a runtime agent.
+
 ## Decision
 
 The system will follow a "Deterministic First" philosophy.
