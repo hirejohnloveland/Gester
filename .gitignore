@@ -1,0 +1,28 @@
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Local runtime data (generated)
+data/gester.db
+data/gester.db-journal
+data/gester.db-wal
+data/gester.db-shm
+data/qdrant/
+data/articles/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

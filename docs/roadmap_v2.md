@@ -45,7 +45,26 @@ Guiding principles:
 
 ------------------------------------------------------------------------
 
-# Phase 0 -- Foundation
+## Status Legend
+
+Status reflects implementation verified against the codebase as of
+2026-06-27, mapping each milestone's "Done When" criteria to working
+code.
+
+-   **Complete** — all material "Done When" criteria are met in code
+-   **In progress** — partially implemented; remaining gaps noted inline
+-   **Not started** — no implementing code yet
+
+Note: configuration is not yet externalized (see Milestone 0.2), so
+"configurable via config file" sub-criteria are deferred and tracked
+under 0.2 rather than blocking otherwise-complete milestones.
+
+Current position: the last fully complete milestone is **3.2 RAG
+Responses**. Phases 5–8 are entirely not started.
+
+------------------------------------------------------------------------
+
+# Phase 0 -- Foundation — In progress
 
 **Purpose**
 
@@ -65,7 +84,10 @@ The application starts successfully, configuration is externalized, the
 project structure is ready for future work, and agent guardrails are in
 place.
 
-## Milestone 0.1 -- Project Skeleton
+## Milestone 0.1 -- Project Skeleton — In Progress
+
+_Note: app starts via `run.py` / `gester.app:app`; logging currently
+relies on uvicorn defaults rather than an explicit logging setup._
 
 Purpose: Create the repository, entry point, and basic application
 structure.
@@ -77,7 +99,11 @@ Done When:
 -   Application starts
 -   Basic logging works
 
-## Milestone 0.2 -- Configuration
+## Milestone 0.2 -- Configuration — In progress
+
+_Remaining: no `config/` layer exists; feed URL, embedding model, LLM
+model, and chunk size/overlap are hardcoded. No `.env` /
+secrets separation in the repo._
 
 Purpose: Externalize application configuration.
 
@@ -87,7 +113,7 @@ Done When:
 -   Models and sources are configurable
 -   Secrets are separated from source control
 
-## Milestone 0.3 -- Documentation & Agent Guardrails
+## Milestone 0.3 -- Documentation & Agent Guardrails — Complete
 
 Purpose: Establish the documentation system that keeps AI assistants
 aligned with project structure, decisions, and constraints.
@@ -104,7 +130,7 @@ Done When:
 
 ------------------------------------------------------------------------
 
-# Phase 1 -- Content Acquisition
+# Phase 1 -- Content Acquisition — In progress
 
 **Purpose**
 
@@ -125,7 +151,7 @@ extensible source types.
 Content is acquired repeatedly without manual intervention from all
 configured sources.
 
-## Milestone 1.1 -- RSS Ingestion
+## Milestone 1.1 -- RSS Ingestion — Complete
 
 Purpose: Retrieve article metadata from configured RSS feeds.
 
@@ -135,7 +161,7 @@ Done When:
 -   Duplicate entries are prevented
 -   Article metadata is stored locally
 
-## Milestone 1.2 -- Article Retrieval
+## Milestone 1.2 -- Article Retrieval — Complete
 
 Purpose: Retrieve and store the full text of articles.
 
@@ -145,7 +171,11 @@ Done When:
 -   Metadata and source URLs are preserved
 -   Previously processed articles are skipped
 
-## Milestone 1.3 -- Source Management
+## Milestone 1.3 -- Source Management — In progress
+
+_Done: `source_type` carried on the domain model/entity; design is
+extensible. Remaining: feed URL is hardcoded in the router (not
+config-driven), and there is no enable/disable mechanism._
 
 Purpose: Support multiple configurable source types.
 
@@ -157,7 +187,7 @@ Done When:
 -   RSS is supported today; design is extensible for email and other
     source types
 
-## Milestone 1.4 -- Email Ingestion
+## Milestone 1.4 -- Email Ingestion — Not started
 
 Purpose: Ingest content from email topics and newsletters.
 
@@ -170,7 +200,7 @@ Done When:
 
 ------------------------------------------------------------------------
 
-# Phase 2 -- Knowledge Storage
+# Phase 2 -- Knowledge Storage — In progress
 
 **Purpose**
 
@@ -188,7 +218,7 @@ base through chunking, embedding, and vector storage.
 Articles are chunked, embedded locally, and searchable with preserved
 source traceability.
 
-## Milestone 2.1 -- Metadata Storage
+## Milestone 2.1 -- Metadata Storage — Complete
 
 Purpose: Store articles in a structured local repository.
 
@@ -198,7 +228,10 @@ Done When:
 -   Duplicate content is detected
 -   Source metadata is preserved
 
-## Milestone 2.2 -- Chunking
+## Milestone 2.2 -- Chunking — In Progresss
+
+_Note: size/overlap are constructor parameters (defaults 1000/200); not
+yet wired to external config (tracked under 0.2)._
 
 Purpose: Split documents into retrieval-friendly chunks.
 
@@ -209,7 +242,11 @@ Done When:
 -   Chunks remain linked to source articles
 -   Chunk metadata is stored
 
-## Milestone 2.3 -- Local Embeddings
+## Milestone 2.3 -- Local Embeddings — I Pgoress
+
+_Note: embeddings run locally (`BAAI/bge-small-en-v1.5`) with no cloud
+dependency and are tracked via `embedded_at`; model name is hardcoded
+(externalization tracked under 0.2)._
 
 Purpose: Generate embeddings using locally hosted models.
 
@@ -220,7 +257,11 @@ Done When:
 -   Embedding models are configurable
 -   Embeddings are stored successfully
 
-## Milestone 2.4 -- Vector Storage
+## Milestone 2.4 -- Vector Storage — In progress
+
+_Done: vectors indexed in local Qdrant, cosine similarity search works,
+results carry source metadata. Remaining: metadata filtering on search
+is not implemented (payload is only `chunk_id` / `source_item_id`)._
 
 Purpose: Store embeddings for semantic retrieval.
 
@@ -233,7 +274,7 @@ Done When:
 
 ------------------------------------------------------------------------
 
-# Phase 3 -- Retrieval Pipeline
+# Phase 3 -- Retrieval Pipeline — In progress
 
 **Purpose**
 
@@ -250,7 +291,7 @@ Build a solid retrieval pipeline before focusing on generation.
 Natural-language questions retrieve relevant grounded context with
 traceable sources.
 
-## Milestone 3.1 -- Retrieval Service
+## Milestone 3.1 -- Retrieval Service — Complete
 
 Purpose: Retrieve relevant content using vector similarity.
 
@@ -261,7 +302,7 @@ Done When:
 -   Configurable result limits and minimum score thresholds
 -   Retrieved content preserves source information
 
-## Milestone 3.2 -- RAG Responses
+## Milestone 3.2 -- RAG Responses — Complete
 
 Purpose: Generate answers using retrieved content.
 
@@ -272,7 +313,11 @@ Done When:
 -   Responses include supporting evidence and source citations
 -   Responses remain grounded in retrieved content
 
-## Milestone 3.3 -- Retrieval Diagnostics
+## Milestone 3.3 -- Retrieval Diagnostics — In progress
+
+_Done: chunks can be inspected via `GET /items/{id}/chunks` and search
+params are tunable per request. Remaining: no side-by-side comparison of
+retrieval settings and no structured retrieval-debugging tooling._
 
 Purpose: Inspect and improve retrieval quality during development.
 
@@ -282,7 +327,12 @@ Done When:
 -   Retrieval quality can be debugged
 -   Retrieval settings can be compared side by side
 
-## Milestone 3.4 -- Source Attribution
+## Milestone 3.4 -- Source Attribution — In progress
+
+_Done: every `/search` and `/ask` response carries title, URL, score,
+and chunk/source IDs, and the prompt enforces inline citations.
+Remaining: no user-facing UI to make citations visible or open original
+articles (depends on Phase 6)._
 
 Purpose: Provide traceability back to original sources.
 
@@ -294,7 +344,7 @@ Done When:
 
 ------------------------------------------------------------------------
 
-# Phase 4 -- Retrieval Quality
+# Phase 4 -- Retrieval Quality — In progress
 
 **Purpose**
 
@@ -312,7 +362,11 @@ Move from a working RAG pipeline toward production-grade quality.
 
 Retrieval quality has been measured and demonstrably improved.
 
-## Milestone 4.1 -- Search Tuning
+## Milestone 4.1 -- Search Tuning — In progress
+
+_Done: per-article dedup (over-fetches `limit * 4`), configurable chunk
+limit and `min_score`. Remaining: thresholds are not systematically
+calibrated (no evaluation harness yet — see 4.3)._
 
 Purpose: Tune retrieval parameters for better precision and recall.
 
@@ -322,7 +376,7 @@ Done When:
 -   Article deduplication in results works correctly
 -   Score thresholds are calibrated
 
-## Milestone 4.2 -- Hybrid Retrieval
+## Milestone 4.2 -- Hybrid Retrieval — Not started
 
 Purpose: Combine keyword and vector search for better coverage.
 
@@ -331,7 +385,9 @@ Done When:
 -   Keyword (BM25) and vector search are combined
 -   Metadata filtering improves result relevance
 
-## Milestone 4.3 -- Evaluation
+## Milestone 4.3 -- Evaluation — Not started
+
+_Note: no test files or query/benchmark sets exist in the repo._
 
 Purpose: Measure and benchmark retrieval quality objectively.
 
@@ -343,7 +399,7 @@ Done When:
 
 ------------------------------------------------------------------------
 
-# Phase 5 -- Knowledge Refinement
+# Phase 5 -- Knowledge Refinement — Not started
 
 **Purpose**
 
@@ -363,7 +419,7 @@ analysis) uses a larger local model suited to 64 GB DDR4 hardware.
 The system automatically produces meaningful synthesized knowledge on
 daily and weekly schedules.
 
-## Milestone 5.1 -- Article Summaries
+## Milestone 5.1 -- Article Summaries — Not started
 
 Purpose: Generate concise summaries for newly acquired content.
 
@@ -374,7 +430,7 @@ Done When:
 -   Summaries are stored locally
 -   Summaries are displayed in the UI
 
-## Milestone 5.2 -- Daily Digest
+## Milestone 5.2 -- Daily Digest — Not started
 
 Purpose: Produce a daily intelligence briefing.
 
@@ -384,7 +440,7 @@ Done When:
 -   Reports summarize recent activity
 -   Reports are viewable through the UI
 
-## Milestone 5.3 -- Theme & Trend Summaries
+## Milestone 5.3 -- Theme & Trend Summaries — Not started
 
 Purpose: Identify how topics evolve over time.
 
@@ -396,7 +452,7 @@ Done When:
     horizons
 -   Significant changes in topic momentum are highlighted
 
-## Milestone 5.4 -- Weekly Intelligence Report
+## Milestone 5.4 -- Weekly Intelligence Report — Not started
 
 Purpose: Generate a curated weekly intelligence report as an overnight
 batch job using a larger local model.
@@ -410,7 +466,10 @@ Done When:
 
 ------------------------------------------------------------------------
 
-# Phase 6 -- User Experience
+# Phase 6 -- User Experience — Not started
+
+_Note: no React client, `client/`, or `package.json` exists yet; the
+project is API-only._
 
 **Purpose**
 
@@ -429,7 +488,7 @@ intelligence page.
 Users can browse articles, search content, view trend summaries across
 time horizons, and read generated responses through a web interface.
 
-## Milestone 6.1 -- Dashboard
+## Milestone 6.1 -- Dashboard — Not started
 
 Purpose: Provide an overview of recently acquired content.
 
@@ -440,7 +499,7 @@ Done When:
 -   Content can be filtered
 -   Personalized recommendations surface prioritized content
 
-## Milestone 6.2 -- Article Reader
+## Milestone 6.2 -- Article Reader — Not started
 
 Purpose: Allow users to read stored content.
 
@@ -451,7 +510,7 @@ Done When:
 -   Source links are available
 -   Article summaries and topics are visible alongside content
 
-## Milestone 6.3 -- Search Experience
+## Milestone 6.3 -- Search Experience — Not started
 
 Purpose: Expose retrieval functionality through the web interface.
 
@@ -462,7 +521,7 @@ Done When:
 -   Original articles can be opened from search results
 -   Related content is displayed
 
-## Milestone 6.4 -- Weekly Intelligence Page
+## Milestone 6.4 -- Weekly Intelligence Page — Not started
 
 Purpose: Deliver the primary weekly intelligence experience as an
 interactive React page.
@@ -477,7 +536,7 @@ Done When:
 
 ------------------------------------------------------------------------
 
-# Phase 7 -- Personalization
+# Phase 7 -- Personalization — Not started
 
 **Purpose**
 
@@ -494,7 +553,7 @@ search, dashboards, and weekly reports.
 
 Recommendations and rankings improve based on user behavior over time.
 
-## Milestone 7.1 -- Engagement Tracking
+## Milestone 7.1 -- Engagement Tracking — Not started
 
 Purpose: Record user interactions with content.
 
@@ -504,7 +563,7 @@ Done When:
 -   Searches are tracked
 -   Saved content is tracked
 
-## Milestone 7.2 -- Interest Model
+## Milestone 7.2 -- Interest Model — Not started
 
 Purpose: Develop a model of user interests from engagement data.
 
@@ -514,7 +573,7 @@ Done When:
 -   Interests evolve over time
 -   Profile data is stored locally
 
-## Milestone 7.3 -- Personalized Ranking
+## Milestone 7.3 -- Personalized Ranking — Not started
 
 Purpose: Improve retrieval and recommendations using engagement data.
 
@@ -526,7 +585,10 @@ Done When:
 
 ------------------------------------------------------------------------
 
-# Phase 8 -- Agent Workflows
+# Phase 8 -- Agent Workflows — Not started
+
+_Note: only documentation groundwork exists (ADR-0003 agent philosophy,
+`agents/agents.md` coding-assistant guardrails); no runtime agents._
 
 **Purpose**
 
@@ -546,7 +608,7 @@ deployment — as publishable educational content.
 Agents perform useful work on top of a trustworthy knowledge base, and
 the project documents how to build and deploy them locally.
 
-## Milestone 8.1 -- Research Agent
+## Milestone 8.1 -- Research Agent — Not started
 
 Purpose: Perform focused investigations on a specific topic.
 
@@ -557,7 +619,7 @@ Done When:
 -   Agent cites supporting sources
 -   Design and implementation are documented for publication
 
-## Milestone 8.2 -- Trend Analysis Agent
+## Milestone 8.2 -- Trend Analysis Agent — Not started
 
 Purpose: Identify emerging patterns across acquired content.
 
@@ -568,7 +630,7 @@ Done When:
 -   Trend reports are generated
 -   Agent workflow is documented as a reusable pattern
 
-## Milestone 8.3 -- Curator Agent
+## Milestone 8.3 -- Curator Agent — Not started
 
 Purpose: Produce highly curated intelligence reports tailored to user
 interests.
@@ -580,7 +642,7 @@ Done When:
 -   Reports prioritize relevant content
 -   Local deployment and operation are documented
 
-## Milestone 8.4 -- Agent Development Guide
+## Milestone 8.4 -- Agent Development Guide — Not started
 
 Purpose: Publish a practical guide for building, designing, developing,
 and deploying local agents using patterns established in this project.
