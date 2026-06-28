@@ -36,6 +36,7 @@ def ask(
     service: Annotated[AnswerService, Depends(get_answer_service)],
     limit: int | None = None,
     min_score: float | None = None,
+    think: bool | None = None,
 ):
     retrieval = settings.retrieval
 
@@ -43,4 +44,5 @@ def ask(
         question,
         limit if limit is not None else retrieval.limit,
         min_score if min_score is not None else retrieval.min_score,
+        think if think is not None else settings.llm.think,
     )

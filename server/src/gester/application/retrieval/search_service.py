@@ -64,6 +64,9 @@ class SearchService:
 
             seen_source_item_ids.add(source_item_id)
 
+            if len(results) >= limit:
+                break
+
         logger.info("Search returned %d result(s)", len(results))
 
         return results

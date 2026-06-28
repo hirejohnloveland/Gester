@@ -21,6 +21,7 @@ class AnswerService:
         question: str,
         limit: int = 5,
         min_score: float = 0.6,
+        think: bool | None = None,
     ) -> dict:
         logger.info("Answer question received")
 
@@ -56,14 +57,22 @@ class AnswerService:
         prompt = self._build_prompt(question, context)
 
         generation_start = time.perf_counter()
-        answer_text = self._llm_client.generate(prompt)
+        generation = self._llm_client.generate(prompt, think=think)
         generation_ms = (time.perf_counter() - generation_start) * 1000
 
-        logger.info("Answer generation completed in %.1f ms", generation_ms)
+        answer_text = generation.content or (generation.thinking or "")
+
+        logger.info(
+            "Answer generation completed in %.1f ms (thinking present: %s, content empty: %s)",
+            generation_ms,
+            generation.thinking is not None,
+            not generation.content,
+        )
 
         return {
             "question": question,
             "answer": answer_text,
+            "thinking": generation.thinking,
             "sources": [
                 {
                     "source_number": index,
@@ -121,6 +130,7 @@ class AnswerService:
         return {
             "question": question,
             "answer": "The stored sources do not provide enough information to answer this question.",
+            "thinking": None,
             "sources": [
                 {
                     "source_number": index,

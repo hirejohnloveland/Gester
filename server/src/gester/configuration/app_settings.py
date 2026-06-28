@@ -33,6 +33,8 @@ class LlmSettings(BaseModel):
     model: str
     temperature: float = Field(ge=0)
     timeout: int = Field(gt=0)
+    think: bool = False
+    num_ctx: int = Field(default=16384, gt=0)
 
 
 class RetrievalSettings(BaseModel):

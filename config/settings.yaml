@@ -124,9 +124,20 @@ vector_store:
 
 llm:
   base_url: http://localhost:11434
-  model: qwen2.5:7b-instruct
+  model: hf.co/unsloth/gemma-4-12b-it-GGUF:Q6_K
   temperature: 0
   timeout: 120
+  # Reasoning models (e.g. Gemma 4) default to "thinking" on, which routes
+  # the answer into a separate channel and leaves the main response empty.
+  # Keep false so /ask returns the grounded answer in `answer`. Per-request
+  # override: /ask?think=true also surfaces the model's reasoning in the
+  # `thinking` field (and uses it as the answer if the model leaves the
+  # main response empty).
+  think: false
+  # Context window (tokens). Ollama defaults to ~4096, which truncates
+  # large RAG prompts (many sources) and yields one-word/empty answers.
+  # Must be large enough for the instructions + retrieved sources + output.
+  num_ctx: 16384
 
 retrieval:
   limit: 5

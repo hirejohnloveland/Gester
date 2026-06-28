@@ -53,7 +53,7 @@ derives `database_path` and `qdrant_path` from `data_dir`.
 Infrastructure constructors take explicit parameters
 (`EmbeddingService(model_name)`,
 `QdrantVectorStore(path, collection_name, vector_size, distance)`,
-`OllamaClient(base_url, model, temperature, timeout)`;
+`OllamaClient(base_url, model, temperature, timeout, think, num_ctx)`;
 `TextChunkingService` was already parameterized). Application services
 receive their collaborators through their constructors rather than
 self-instantiating them.

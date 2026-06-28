@@ -7,5 +7,6 @@ from gester.application.responses.answer_timing_response import AnswerTimingResp
 class AnswerResponse(BaseModel):
     question: str
     answer: str
+    thinking: str | None = None
     sources: list[AnswerSourceResponse]
     timing: AnswerTimingResponse

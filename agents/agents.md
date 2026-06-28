@@ -100,7 +100,8 @@ Current routers: `content_router`, `ingestion_router`, `retrieval_router`.
 
 Business concepts and models. No infrastructure dependencies.
 
-Current examples: `SourceItem`, `SourceItemChunk`, `RssItem`, `TextChunk`.
+Current examples: `SourceItem`, `SourceItemChunk`, `RssItem`, `TextChunk`,
+`LlmGenerationResult`.
 
 ### application
 

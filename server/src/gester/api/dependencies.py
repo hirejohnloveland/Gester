@@ -93,6 +93,8 @@ def get_llm_client(settings: SettingsDep) -> OllamaClient:
         model=settings.llm.model,
         temperature=settings.llm.temperature,
         timeout=settings.llm.timeout,
+        think=settings.llm.think,
+        num_ctx=settings.llm.num_ctx,
     )
 
 
