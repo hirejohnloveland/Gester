@@ -254,6 +254,12 @@ Useful logs include:
 * Embeddings generated
 * Vectors indexed
 
+Logging is configured once at startup by
+`infrastructure/logging/logging_configurator.py` (`configure_logging`)
+from the `logging` section of `config/settings.yaml`. Obtain a module
+logger with `logging.getLogger(__name__)` and rely on root-logger
+propagation; do not add handlers in business logic. See ADR-0012.
+
 
 ---
 

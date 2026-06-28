@@ -66,7 +66,7 @@ Responses**. Phases 5–8 are entirely not started.
 
 ------------------------------------------------------------------------
 
-# Phase 0 -- Foundation — In progress
+# Phase 0 -- Foundation — Complete
 
 **Purpose**
 
@@ -88,8 +88,11 @@ place.
 
 ## Milestone 0.1 -- Project Skeleton — Complete
 
-_Note: app starts via `run.py` / `gester.app:app`; logging currently
-relies on uvicorn defaults rather than an explicit logging setup._
+_Note: app starts via `run.py` / `gester.app:app`. Logging is configured
+explicitly at startup via `infrastructure/logging/logging_configurator.py`
+from the `logging` settings section: a daily-rotating file handler under
+`data/logs/` with 14-day retention plus optional console output. See
+ADR-0012._
 
 Purpose: Create the repository, entry point, and basic application
 structure.
@@ -175,13 +178,19 @@ Done When:
 -   Metadata and source URLs are preserved
 -   Previously processed articles are skipped
 
-## Milestone 1.3 -- Source Management — In progress
-
+## Milestone 1.3 -- Source Management — On Hold
 _Done: `source_type` carried on the domain model/entity; design is
 extensible. Feeds are now config-driven via `config/settings.yaml` with
 per-feed `enabled` flags, and `/ingest/rss` iterates the enabled feeds
-(see ADR-0011). Remaining: multi-source-type extensibility (email and
-other source types) beyond RSS._
+(see ADR-0011). Ingestion volume is bounded per feed via the `ingestion`
+settings (`max_age_days` / `max_items_per_feed`), with optional per-feed
+overrides.
+
+On hold: multi-source-type extensibility (email and other source types)
+beyond RSS is paused. RSS has proven undependable as the primary
+acquisition path, so source-management work is deferred until the
+web-crawler approach (Milestone 1.5) clarifies how non-RSS sources
+should be modeled._  
 
 Purpose: Support multiple configurable source types.
 
@@ -193,9 +202,14 @@ Done When:
 -   RSS is supported today; design is extensible for email and other
     source types
 
-## Milestone 1.4 -- Email Ingestion — Not started
+## Milestone 1.4 -- Email Ingestion — On Hold
+
+_On hold: email ingestion is paused along with the rest of the
+multi-source acquisition work (see Milestones 1.3 and 1.5) while the
+dependability of RSS as the primary source path is reconsidered._
 
 Purpose: Ingest content from email topics and newsletters.
+
 
 Done When:
 
@@ -203,6 +217,29 @@ Done When:
 -   Message content is extracted and stored as source items
 -   Duplicate messages are prevented
 -   Email metadata (subject, sender, date) is preserved
+
+## Milestone 1.5 -- Web Crawler — On Hold
+
+_Context: RSS is often not dependable. Feeds truncate content or omit
+full text, vary widely in how many items they expose, fall behind or
+go stale, and some sources publish no usable feed at all. A direct web
+crawler reduces dependence on feed quality by fetching source pages
+(and following links within a bounded scope) rather than trusting a
+feed to surface them. This is the motivating reason Milestones 1.3 and
+1.4 are on hold._
+
+Purpose: Acquire content by crawling configured source websites
+directly, as a more dependable complement to RSS ingestion.
+
+Done When:
+
+-   Crawl targets (seed URLs / domains) are configuration-driven
+-   Pages are fetched, deduplicated by URL, and stored as source items
+-   Crawl scope is bounded (max depth, max pages, allowed domains)
+-   `robots.txt` and polite rate limiting are respected
+-   Crawled pages reuse the existing extraction, chunking, and storage
+    pipeline
+-   Crawling and RSS ingestion can run independently
 
 ------------------------------------------------------------------------
 

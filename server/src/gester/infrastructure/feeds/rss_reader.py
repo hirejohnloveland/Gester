@@ -1,8 +1,11 @@
+import logging
 from datetime import datetime
 
 import feedparser
 
 from gester.domain.models.rss_item import RssItem
+
+logger = logging.getLogger(__name__)
 
 
 class RssReader:
@@ -20,6 +23,8 @@ class RssReader:
             )
 
             items.append(item)
+
+        logger.info("Parsed %d entries from feed %s", len(items), feed_url)
 
         return items
 

@@ -81,6 +81,7 @@ Gester/
 │       ├── extraction/
 │       ├── feeds/
 │       ├── llm/
+│       ├── logging/     # Logging configurator (stdlib logging setup)
 │       └── storage/     # SQLite and Qdrant
 ├── run.py               # Server startup script
 └── requirements.txt
@@ -114,7 +115,9 @@ Current examples: `RssIngestionService`, `SourceItemChunkingService`,
 Implementation details and external integrations.
 
 Current examples: `RssReader`, `ArticleExtractor`, `EmbeddingService`,
-`QdrantVectorStore`, `OllamaClient`, SQLite repositories and mappers.
+`QdrantVectorStore`, `OllamaClient`, SQLite repositories and mappers, and
+the `logging` configurator (`configure_logging`, stdlib logging setup
+invoked at startup; see ADR-0012).
 
 ### configuration
 
@@ -126,9 +129,12 @@ applies `GESTER_*` environment overrides, and validates. See ADR-0011.
 
 Configuration files for models, sources, and runtime settings. The
 committed `settings.yaml` holds non-secret defaults (feeds, paths,
-chunking, embedding, vector store, LLM, retrieval); environment
-variables override deploy-specific values. Loaded and validated by the
-`configuration` package at startup (see ADR-0011).
+ingestion, chunking, embedding, vector store, LLM, retrieval, logging);
+environment variables override deploy-specific values. The `ingestion`
+section bounds how many RSS entries are ingested per feed
+(`max_age_days`, `max_items_per_feed`), with optional per-feed overrides.
+Loaded and validated by the `configuration` package at startup (see
+ADR-0011 and ADR-0012).
 
 ### data
 

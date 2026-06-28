@@ -1,8 +1,12 @@
+import logging
+
 from gester.application.ingestion.text_chunking_service import TextChunkingService
 from gester.domain.models.source_item_chunk import SourceItemChunk
 from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
 from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
 from gester.infrastructure.storage.vector.qdrant_vector_store import QdrantVectorStore
+
+logger = logging.getLogger(__name__)
 
 
 class SourceItemChunkingService:
@@ -19,6 +23,8 @@ class SourceItemChunkingService:
         self._vector_store = vector_store
 
     def chunk_missing_source_items(self) -> int:
+        logger.info("Chunking run started for source items missing chunks")
+
         source_items = self._source_item_repository.get_all_with_content()
 
         chunked_item_count = 0
@@ -42,10 +48,18 @@ class SourceItemChunkingService:
 
             chunked_item_count += 1
 
+            logger.debug(
+                "Created %d chunk(s) for source item %d", len(chunks), source_item.id
+            )
+
+        logger.info("Chunking run finished; %d item(s) chunked", chunked_item_count)
+
         return chunked_item_count
 
     def reset_chunks(self) -> int:
         deleted_chunk_count = self._chunk_repository.delete_all()
         self._vector_store.clear_collection()
+
+        logger.info("Reset chunks; %d chunk(s) deleted", deleted_chunk_count)
 
         return deleted_chunk_count

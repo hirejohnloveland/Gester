@@ -71,9 +71,11 @@ def load_settings() -> AppSettings:
         project_root=project_root,
         data_dir=data_dir,
         feeds=data.get("feeds", []),
+        ingestion=data.get("ingestion", {}),
         chunking=data.get("chunking", {}),
         embedding=data.get("embedding", {}),
         vector_store=data.get("vector_store", {}),
         llm=llm_section,
         retrieval=data.get("retrieval", {}),
+        logging=data.get("logging", {}),
     )

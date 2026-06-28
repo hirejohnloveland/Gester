@@ -43,17 +43,35 @@ class RetrievalSettings(BaseModel):
     dedupe_by_article: bool
 
 
+class IngestionSettings(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    max_age_days: int = Field(gt=0)
+    max_items_per_feed: int = Field(gt=0)
+
+
+class LoggingSettings(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    level: str
+    retention_days: int = Field(gt=0)
+    filename: str
+    console: bool
+
+
 class AppSettings(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     project_root: Path
     data_dir: Path
     feeds: list[FeedSourceSettings]
+    ingestion: IngestionSettings
     chunking: ChunkingSettings
     embedding: EmbeddingSettings
     vector_store: VectorStoreSettings
     llm: LlmSettings
     retrieval: RetrievalSettings
+    logging: LoggingSettings
 
     @property
     def database_path(self) -> Path:
@@ -62,6 +80,10 @@ class AppSettings(BaseModel):
     @property
     def qdrant_path(self) -> Path:
         return self.data_dir / "qdrant"
+
+    @property
+    def log_dir(self) -> Path:
+        return self.data_dir / "logs"
 
     @property
     def enabled_feeds(self) -> list[FeedSourceSettings]:

@@ -1,4 +1,8 @@
+import logging
+
 import trafilatura
+
+logger = logging.getLogger(__name__)
 
 
 class ArticleExtractor:
@@ -6,6 +10,7 @@ class ArticleExtractor:
         downloaded = trafilatura.fetch_url(url)
 
         if downloaded is None:
+            logger.warning("Article download failed for %s", url)
             return None
 
         text = trafilatura.extract(
@@ -15,6 +20,7 @@ class ArticleExtractor:
         )
 
         if text is None or text.strip() == "":
+            logger.warning("Article extraction returned empty content for %s", url)
             return None
 
         return text.strip()

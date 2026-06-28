@@ -30,8 +30,10 @@ via explicit constructor injection.
 ### Source of values
 
 - **Committed YAML** (`config/settings.yaml`) holds non-secret defaults:
-  `paths`, `feeds[]` (`name` / `url` / `enabled`), `chunking`,
-  `embedding`, `vector_store`, `llm`, and `retrieval`.
+  `paths`, `feeds[]` (`name` / `url` / `enabled`, plus optional
+  `max_age_days` / `max_items_per_feed` overrides), `ingestion`
+  (`max_age_days` / `max_items_per_feed`), `chunking`, `embedding`,
+  `vector_store`, `llm`, `retrieval`, and `logging`.
 - **Environment variables** override deploy-specific values. A small,
   explicit set is supported: `GESTER_CONFIG_PATH` (settings file
   location), `GESTER_DATA_DIR` (runtime data directory), and

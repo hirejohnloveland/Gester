@@ -107,6 +107,7 @@ LlmClientDep = Annotated[OllamaClient, Depends(get_llm_client)]
 
 
 def get_rss_ingestion_service(
+    settings: SettingsDep,
     rss_reader: Annotated[RssReader, Depends(get_rss_reader)],
     article_extractor: Annotated[ArticleExtractor, Depends(get_article_extractor)],
     repository: SourceItemRepositoryDep,
@@ -119,6 +120,8 @@ def get_rss_ingestion_service(
         repository=repository,
         chunking_service=chunking_service,
         chunk_repository=chunk_repository,
+        max_age_days=settings.ingestion.max_age_days,
+        max_items_per_feed=settings.ingestion.max_items_per_feed,
     )
 
 

@@ -20,6 +20,7 @@ data/gester.db-wal
 data/gester.db-shm
 data/qdrant/
 data/articles/
+data/logs/
 
 # IDE / OS
 .vscode/

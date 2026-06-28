@@ -24,7 +24,11 @@ def ingest_rss(
     total_saved = 0
 
     for feed in settings.enabled_feeds:
-        saved_count = service.ingest(feed.url)
+        saved_count = service.ingest(
+            feed.url,
+            max_age_days=feed.max_age_days,
+            max_items_per_feed=feed.max_items_per_feed,
+        )
         total_saved += saved_count
 
         feed_results.append(

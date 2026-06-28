@@ -1,8 +1,12 @@
+import logging
+
 from gester.application.responses.search_result_response import SearchResultResponse
 from gester.infrastructure.embeddings.embedding_service import EmbeddingService
 from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
 from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
 from gester.infrastructure.storage.vector.qdrant_vector_store import QdrantVectorStore
+
+logger = logging.getLogger(__name__)
 
 
 class SearchService:
@@ -20,7 +24,9 @@ class SearchService:
 
     def search(self, query: str, limit: int = 5,     min_score: float = 0.0,
         dedupe_by_article: bool = True) -> list[SearchResultResponse]:
-        
+
+        logger.info("Search query received (limit=%d, min_score=%s)", limit, min_score)
+
         query_embedding = self._embedding_service.generate_embedding(query)
 
         search_limit = limit * 4 if dedupe_by_article else limit
@@ -57,5 +63,7 @@ class SearchService:
             )
 
             seen_source_item_ids.add(source_item_id)
+
+        logger.info("Search returned %d result(s)", len(results))
 
         return results

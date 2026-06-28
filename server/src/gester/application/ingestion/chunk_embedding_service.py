@@ -1,7 +1,11 @@
+import logging
+
 from gester.infrastructure.embeddings.embedding_service import EmbeddingService
 from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
 from gester.infrastructure.storage.vector.qdrant_vector_store import QdrantVectorStore
 from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
+
+logger = logging.getLogger(__name__)
 
 
 class ChunkEmbeddingService:
@@ -24,6 +28,12 @@ class ChunkEmbeddingService:
         else:
             chunks = self._chunk_repository.get_unembedded_chunks()
 
+        logger.info(
+            "Embedding run started; %d chunk(s) to process (rebuild=%s)",
+            len(chunks),
+            rebuild,
+        )
+
         embedded_count = 0
 
         for chunk in chunks:
@@ -33,12 +43,19 @@ class ChunkEmbeddingService:
                 self._chunk_repository.mark_embedded(chunk.id)
                 embedded_count += 1
 
+        logger.info("Embedding run finished; %d embedding(s) generated", embedded_count)
+
         return embedded_count
 
     def _embed_chunk(self, chunk) -> bool:
         source_item = self._source_item_repository.get_by_id(chunk.source_item_id)
 
         if source_item is None:
+            logger.warning(
+                "Skipping chunk %s; missing source item %s",
+                chunk.id,
+                chunk.source_item_id,
+            )
             return False
 
         embedding_text = self._build_embedding_text(source_item, chunk)

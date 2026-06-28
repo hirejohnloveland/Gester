@@ -14,6 +14,102 @@ feeds:
     url: https://www.xda-developers.com/feed/
     enabled: true
 
+  - name: Simon Willison
+    url: https://simonwillison.net/atom/everything/
+    enabled: true
+
+  - name: GitHub Blog
+    url: https://github.blog/feed/
+    enabled: true
+
+  - name: GitHub Copilot Changelog
+    url: https://github.blog/changelog/label/copilot/feed/
+    enabled: true
+
+  - name: OpenAI Blog
+    url: https://openai.com/news/rss.xml
+    enabled: true
+
+  - name: Anthropic Blog
+    url: https://www.anthropic.com/news/rss.xml
+    enabled: true
+
+  - name: Google AI Blog
+    url: https://blog.google/technology/ai/rss/
+    enabled: true
+
+  - name: Microsoft AI Blog
+    url: https://blogs.microsoft.com/ai/feed/
+    enabled: true
+
+  - name: Microsoft Developer Blogs
+    url: https://devblogs.microsoft.com/feed/
+    enabled: true
+
+  - name: Azure AI Blog
+    url: https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/bg-p/AzureAIBlog/rss
+    enabled: true
+
+  - name: The Pragmatic Engineer
+    url: https://blog.pragmaticengineer.com/feed/
+    enabled: true
+
+  - name: InfoQ
+    url: https://feed.infoq.com/
+    enabled: true
+
+  - name: Martin Fowler
+    url: https://martinfowler.com/feed.atom
+    enabled: true
+
+  - name: Hacker News Front Page
+    url: https://hnrss.org/frontpage
+    enabled: true
+
+  - name: Hacker News AI
+    url: https://hnrss.org/newest?q=AI
+    enabled: true
+
+  - name: Stack Overflow Blog
+    url: https://stackoverflow.blog/feed/
+    enabled: true
+
+  - name: JetBrains Blog
+    url: https://blog.jetbrains.com/feed/
+    enabled: true
+
+  - name: Thoughtworks Insights
+    url: https://www.thoughtworks.com/insights/rss.xml
+    enabled: true
+
+  - name: Latent Space
+    url: https://www.latent.space/feed
+    enabled: true
+
+  - name: The Batch
+    url: https://www.deeplearning.ai/the-batch/feed/
+    enabled: true
+
+  - name: Benedict Evans
+    url: https://www.ben-evans.com/benedictevans?format=rss
+    enabled: true
+
+  - name: Cursor Blog
+    url: https://cursor.com/rss.xml
+    enabled: true
+
+  - name: Cursor Changelog
+    url: https://www.any-feeds.com/sources/cursorchangelog
+    enabled: true
+
+# Ingestion limits applied per feed when reading RSS entries.
+# Individual feeds may override either value (see feeds[].max_age_days /
+# feeds[].max_items_per_feed). Items with no published date are kept and
+# still count toward max_items_per_feed.
+ingestion:
+  max_age_days: 90
+  max_items_per_feed: 50
+
 chunking:
   chunk_size: 1000
   overlap: 200
@@ -36,3 +132,9 @@ retrieval:
   limit: 5
   min_score: 0.6
   dedupe_by_article: true
+
+logging:
+  level: INFO
+  retention_days: 14
+  filename: gester.log
+  console: true

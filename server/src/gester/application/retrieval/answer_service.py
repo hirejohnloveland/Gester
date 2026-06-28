@@ -1,7 +1,10 @@
+import logging
 import time
 
 from gester.application.retrieval.search_service import SearchService
 from gester.infrastructure.llm.ollama_client import OllamaClient
+
+logger = logging.getLogger(__name__)
 
 
 class AnswerService:
@@ -19,6 +22,8 @@ class AnswerService:
         limit: int = 5,
         min_score: float = 0.6,
     ) -> dict:
+        logger.info("Answer question received")
+
         total_start = time.perf_counter()
 
         search_start = time.perf_counter()
@@ -31,6 +36,7 @@ class AnswerService:
         search_ms = (time.perf_counter() - search_start) * 1000
 
         if not search_results:
+            logger.info("No search results found; returning no-evidence response")
             return self._build_no_evidence_response(
                 question,
                 search_ms=search_ms,
@@ -38,6 +44,7 @@ class AnswerService:
             )
 
         if not self._has_direct_text_evidence(question, search_results):
+            logger.info("No direct text evidence found; returning no-evidence response")
             return self._build_no_evidence_response(
                 question,
                 search_results,
@@ -51,6 +58,8 @@ class AnswerService:
         generation_start = time.perf_counter()
         answer_text = self._llm_client.generate(prompt)
         generation_ms = (time.perf_counter() - generation_start) * 1000
+
+        logger.info("Answer generation completed in %.1f ms", generation_ms)
 
         return {
             "question": question,
