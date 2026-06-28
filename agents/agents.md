@@ -65,8 +65,11 @@ Gester/
 │   ├── coding-standards.md
 │   └── roadmap_v2.md    # Current roadmap
 ├── server/src/gester/
-│   ├── app.py           # Composition root: creates app, includes routers, startup
-│   ├── api/routers/     # FastAPI APIRouter modules (content, ingestion, retrieval)
+│   ├── app.py           # Composition root: loads settings, builds DB, includes routers, startup
+│   ├── api/
+│   │   ├── routers/     # FastAPI APIRouter modules (content, ingestion, retrieval)
+│   │   └── dependencies.py  # Depends providers that assemble services from settings
+│   ├── configuration/   # Settings models and loader (AppSettings, settings_loader)
 │   ├── domain/models/   # Business concepts (SourceItem, SourceItemChunk, …)
 │   ├── application/     # Use cases and orchestration
 │   │   ├── content/     # Read/query services for stored items and chunks
@@ -113,9 +116,19 @@ Implementation details and external integrations.
 Current examples: `RssReader`, `ArticleExtractor`, `EmbeddingService`,
 `QdrantVectorStore`, `OllamaClient`, SQLite repositories and mappers.
 
+### configuration
+
+Pydantic settings models (`AppSettings`, `FeedSourceSettings`) and
+`settings_loader.load_settings()`, which reads `config/settings.yaml`,
+applies `GESTER_*` environment overrides, and validates. See ADR-0011.
+
 ### config
 
-Configuration files for models, sources, and runtime settings.
+Configuration files for models, sources, and runtime settings. The
+committed `settings.yaml` holds non-secret defaults (feeds, paths,
+chunking, embedding, vector store, LLM, retrieval); environment
+variables override deploy-specific values. Loaded and validated by the
+`configuration` package at startup (see ADR-0011).
 
 ### data
 

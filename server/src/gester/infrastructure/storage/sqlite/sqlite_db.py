@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 
@@ -8,24 +8,24 @@ class Base(DeclarativeBase):
     pass
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[6]
-DATABASE_PATH = PROJECT_ROOT / "data" / "gester.db"
+def create_db_engine(database_path: Path) -> Engine:
+    database_path.parent.mkdir(parents=True, exist_ok=True)
 
-engine = create_engine(
-    f"sqlite:///{DATABASE_PATH}",
-    echo=False,
-)
-
-SessionLocal = sessionmaker(
-    bind=engine,
-    autoflush=False,
-    autocommit=False,
-)
+    return create_engine(
+        f"sqlite:///{database_path}",
+        echo=False,
+    )
 
 
-def initialize_database() -> None:
-    DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
+def create_session_factory(engine: Engine) -> sessionmaker:
+    return sessionmaker(
+        bind=engine,
+        autoflush=False,
+        autocommit=False,
+    )
 
+
+def initialize_database(engine: Engine) -> None:
     from gester.infrastructure.storage.sqlite.entities.source_item_chunk_entity import (
         SourceItemChunkEntity,
     )

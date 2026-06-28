@@ -46,6 +46,7 @@ Current ADRs:
 | ADR-0007 | Local model stack (Ollama, Sentence Transformers) |
 | ADR-0009 | Staged ingestion pipeline |
 | ADR-0010 | Domain, entity, and mapper persistence |
+| ADR-0011 | Configuration management |
 
 New ADRs are numbered sequentially. Do not rewrite accepted ADRs to
 reverse a decision; supersede them with a new ADR instead.

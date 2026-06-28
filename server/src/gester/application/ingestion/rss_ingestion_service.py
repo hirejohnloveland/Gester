@@ -8,12 +8,19 @@ from gester.infrastructure.storage.sqlite.source_item_repository import SourceIt
 
 
 class RssIngestionService:
-    def __init__(self) -> None:
-        self._rss_reader = RssReader()
-        self._article_extractor = ArticleExtractor()
-        self._repository = SourceItemRepository()
-        self._chunking_service = TextChunkingService()
-        self._chunk_repository = SourceItemChunkRepository()
+    def __init__(
+        self,
+        rss_reader: RssReader,
+        article_extractor: ArticleExtractor,
+        repository: SourceItemRepository,
+        chunking_service: TextChunkingService,
+        chunk_repository: SourceItemChunkRepository,
+    ) -> None:
+        self._rss_reader = rss_reader
+        self._article_extractor = article_extractor
+        self._repository = repository
+        self._chunking_service = chunking_service
+        self._chunk_repository = chunk_repository
 
     def ingest(self, feed_url: str) -> int:
         rss_items = self._rss_reader.read(feed_url)

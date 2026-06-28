@@ -4,13 +4,15 @@ import requests
 class OllamaClient:
     def __init__(
         self,
-        base_url: str = "http://localhost:11434",
-        # model: str = "hf.co/unsloth/gemma-4-12b-it-GGUF:UD-Q6_K_XL",
-        model: str = "qwen2.5:7b-instruct",
-
+        base_url: str,
+        model: str,
+        temperature: float,
+        timeout: int,
     ) -> None:
         self._base_url = base_url.rstrip("/")
         self._model = model
+        self._temperature = temperature
+        self._timeout = timeout
 
     def generate(self, prompt: str) -> str:
         response = requests.post(
@@ -19,11 +21,11 @@ class OllamaClient:
                 "model": self._model,
                 "prompt": prompt,
                 "stream": False,
-                 "options": {
-                "temperature": 0,
+                "options": {
+                    "temperature": self._temperature,
                 },
             },
-            timeout=120,
+            timeout=self._timeout,
         )
 
         response.raise_for_status()

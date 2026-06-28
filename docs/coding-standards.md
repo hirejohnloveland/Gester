@@ -230,6 +230,12 @@ Use configuration files or environment variables for values such as:
 * Embedding model name
 * Collection names
 
+Settings live in `config/settings.yaml` and are loaded and validated by
+the `configuration` package (`load_settings()` in
+`server/src/gester/configuration/settings_loader.py`). Pass settings into
+services via constructor injection rather than reading them inside
+business logic. See ADR-0011.
+
 ---
 
 ## Logging

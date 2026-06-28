@@ -6,11 +6,17 @@ from gester.infrastructure.storage.vector.qdrant_vector_store import QdrantVecto
 
 
 class SourceItemChunkingService:
-    def __init__(self) -> None:
-        self._source_item_repository = SourceItemRepository()
-        self._chunk_repository = SourceItemChunkRepository()
-        self._chunking_service = TextChunkingService()
-        self._vector_store = QdrantVectorStore()
+    def __init__(
+        self,
+        source_item_repository: SourceItemRepository,
+        chunk_repository: SourceItemChunkRepository,
+        chunking_service: TextChunkingService,
+        vector_store: QdrantVectorStore,
+    ) -> None:
+        self._source_item_repository = source_item_repository
+        self._chunk_repository = chunk_repository
+        self._chunking_service = chunking_service
+        self._vector_store = vector_store
 
     def chunk_missing_source_items(self) -> int:
         source_items = self._source_item_repository.get_all_with_content()

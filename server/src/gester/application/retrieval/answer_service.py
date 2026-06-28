@@ -5,9 +5,13 @@ from gester.infrastructure.llm.ollama_client import OllamaClient
 
 
 class AnswerService:
-    def __init__(self) -> None:
-        self._search_service = SearchService()
-        self._llm_client = OllamaClient()
+    def __init__(
+        self,
+        search_service: SearchService,
+        llm_client: OllamaClient,
+    ) -> None:
+        self._search_service = search_service
+        self._llm_client = llm_client
 
     def answer(
         self,

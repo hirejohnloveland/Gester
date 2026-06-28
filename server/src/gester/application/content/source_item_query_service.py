@@ -3,8 +3,8 @@ from gester.infrastructure.storage.sqlite.source_item_repository import SourceIt
 
 
 class SourceItemQueryService:
-    def __init__(self) -> None:
-        self._repository = SourceItemRepository()
+    def __init__(self, repository: SourceItemRepository) -> None:
+        self._repository = repository
 
     def get_all(self) -> list[SourceItem]:
         return self._repository.get_all()

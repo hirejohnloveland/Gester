@@ -1,0 +1,38 @@
+# Gester application settings (non-secret defaults).
+#
+# Secrets and deploy-specific values are supplied via environment variables
+# (see server/src/gester/configuration/settings_loader.py). Values here are
+# committed defaults suitable for local development.
+
+paths:
+  # Directory for local runtime data (SQLite database and Qdrant storage).
+  # Relative paths are resolved against the project root.
+  data_dir: data
+
+feeds:
+  - name: XDA Developers
+    url: https://www.xda-developers.com/feed/
+    enabled: true
+
+chunking:
+  chunk_size: 1000
+  overlap: 200
+
+embedding:
+  model_name: BAAI/bge-small-en-v1.5
+
+vector_store:
+  collection_name: gester_chunks
+  vector_size: 384
+  distance: cosine
+
+llm:
+  base_url: http://localhost:11434
+  model: qwen2.5:7b-instruct
+  temperature: 0
+  timeout: 120
+
+retrieval:
+  limit: 5
+  min_score: 0.6
+  dedupe_by_article: true

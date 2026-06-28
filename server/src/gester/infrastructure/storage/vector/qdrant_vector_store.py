@@ -5,13 +5,17 @@ from qdrant_client.models import Distance, PointStruct, VectorParams
 
 
 class QdrantVectorStore:
-    def __init__(self) -> None:
-        self._collection_name = "gester_chunks"
-
-        project_root = Path(__file__).resolve().parents[6]
-        qdrant_path = project_root / "data" / "qdrant"
-
-        self._client = QdrantClient(path=str(qdrant_path))
+    def __init__(
+        self,
+        path: Path,
+        collection_name: str,
+        vector_size: int,
+        distance: Distance,
+    ) -> None:
+        self._collection_name = collection_name
+        self._vector_size = vector_size
+        self._distance = distance
+        self._client = QdrantClient(path=str(path))
 
     def ensure_collection(self) -> None:
         if self._client.collection_exists(self._collection_name):
@@ -20,8 +24,8 @@ class QdrantVectorStore:
         self._client.create_collection(
             collection_name=self._collection_name,
             vectors_config=VectorParams(
-                size=384,
-                distance=Distance.COSINE,
+                size=self._vector_size,
+                distance=self._distance,
             ),
         )
 
@@ -47,7 +51,6 @@ class QdrantVectorStore:
             points=[point],
         )
 
-        
     def search(self, embedding: list[float], limit: int = 5):
         self.ensure_collection()
 

@@ -6,11 +6,17 @@ from gester.infrastructure.storage.vector.qdrant_vector_store import QdrantVecto
 
 
 class SearchService:
-    def __init__(self) -> None:
-        self._embedding_service = EmbeddingService()
-        self._vector_store = QdrantVectorStore()
-        self._chunk_repository = SourceItemChunkRepository()
-        self._source_item_repository = SourceItemRepository()
+    def __init__(
+        self,
+        embedding_service: EmbeddingService,
+        vector_store: QdrantVectorStore,
+        chunk_repository: SourceItemChunkRepository,
+        source_item_repository: SourceItemRepository,
+    ) -> None:
+        self._embedding_service = embedding_service
+        self._vector_store = vector_store
+        self._chunk_repository = chunk_repository
+        self._source_item_repository = source_item_repository
 
     def search(self, query: str, limit: int = 5,     min_score: float = 0.0,
         dedupe_by_article: bool = True) -> list[SearchResultResponse]:

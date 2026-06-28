@@ -5,11 +5,17 @@ from gester.infrastructure.storage.sqlite.source_item_repository import SourceIt
 
 
 class ChunkEmbeddingService:
-    def __init__(self) -> None:
-        self._chunk_repository = SourceItemChunkRepository()
-        self._source_item_repository = SourceItemRepository()
-        self._embedding_service = EmbeddingService()
-        self._vector_store = QdrantVectorStore()
+    def __init__(
+        self,
+        chunk_repository: SourceItemChunkRepository,
+        source_item_repository: SourceItemRepository,
+        embedding_service: EmbeddingService,
+        vector_store: QdrantVectorStore,
+    ) -> None:
+        self._chunk_repository = chunk_repository
+        self._source_item_repository = source_item_repository
+        self._embedding_service = embedding_service
+        self._vector_store = vector_store
 
     def embed_chunks(self, rebuild: bool = False) -> int:
         if rebuild:

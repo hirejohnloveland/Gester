@@ -55,9 +55,11 @@ code.
 -   **In progress** — partially implemented; remaining gaps noted inline
 -   **Not started** — no implementing code yet
 
-Note: configuration is not yet externalized (see Milestone 0.2), so
-"configurable via config file" sub-criteria are deferred and tracked
-under 0.2 rather than blocking otherwise-complete milestones.
+Note: configuration is now externalized (see Milestone 0.2 and
+ADR-0011). Settings load from `config/settings.yaml` with `GESTER_*`
+environment overrides, validated by the `configuration` package and
+injected via constructors. Previously deferred "configurable via config
+file" sub-criteria are now satisfied.
 
 Current position: the last fully complete milestone is **3.2 RAG
 Responses**. Phases 5–8 are entirely not started.
@@ -84,7 +86,7 @@ The application starts successfully, configuration is externalized, the
 project structure is ready for future work, and agent guardrails are in
 place.
 
-## Milestone 0.1 -- Project Skeleton — In Progress
+## Milestone 0.1 -- Project Skeleton — Complete
 
 _Note: app starts via `run.py` / `gester.app:app`; logging currently
 relies on uvicorn defaults rather than an explicit logging setup._
@@ -99,11 +101,13 @@ Done When:
 -   Application starts
 -   Basic logging works
 
-## Milestone 0.2 -- Configuration — In progress
+## Milestone 0.2 -- Configuration — Complete
 
-_Remaining: no `config/` layer exists; feed URL, embedding model, LLM
-model, and chunk size/overlap are hardcoded. No `.env` /
-secrets separation in the repo._
+_Done: `config/settings.yaml` holds non-secret defaults (feeds, paths,
+chunking, embedding, vector store, LLM, retrieval), loaded and validated
+by the `configuration` package. `GESTER_*` environment variables
+override deploy-specific values and secrets. Settings are injected into
+services via constructors (see ADR-0011)._
 
 Purpose: Externalize application configuration.
 
@@ -174,8 +178,10 @@ Done When:
 ## Milestone 1.3 -- Source Management — In progress
 
 _Done: `source_type` carried on the domain model/entity; design is
-extensible. Remaining: feed URL is hardcoded in the router (not
-config-driven), and there is no enable/disable mechanism._
+extensible. Feeds are now config-driven via `config/settings.yaml` with
+per-feed `enabled` flags, and `/ingest/rss` iterates the enabled feeds
+(see ADR-0011). Remaining: multi-source-type extensibility (email and
+other source types) beyond RSS._
 
 Purpose: Support multiple configurable source types.
 
@@ -228,10 +234,11 @@ Done When:
 -   Duplicate content is detected
 -   Source metadata is preserved
 
-## Milestone 2.2 -- Chunking — In Progresss
+## Milestone 2.2 -- Chunking — Complete
 
-_Note: size/overlap are constructor parameters (defaults 1000/200); not
-yet wired to external config (tracked under 0.2)._
+_Done: chunk size and overlap are now sourced from
+`config/settings.yaml` (`chunking` section) and injected into
+`TextChunkingService` (see ADR-0011)._
 
 Purpose: Split documents into retrieval-friendly chunks.
 
@@ -242,11 +249,12 @@ Done When:
 -   Chunks remain linked to source articles
 -   Chunk metadata is stored
 
-## Milestone 2.3 -- Local Embeddings — I Pgoress
+## Milestone 2.3 -- Local Embeddings — Complete
 
-_Note: embeddings run locally (`BAAI/bge-small-en-v1.5`) with no cloud
-dependency and are tracked via `embedded_at`; model name is hardcoded
-(externalization tracked under 0.2)._
+_Done: embeddings run locally (`BAAI/bge-small-en-v1.5`) with no cloud
+dependency and are tracked via `embedded_at`. The model name is now
+sourced from `config/settings.yaml` (`embedding` section) and injected
+into `EmbeddingService` (see ADR-0011)._
 
 Purpose: Generate embeddings using locally hosted models.
 
