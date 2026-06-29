@@ -88,5 +88,9 @@ class AppSettings(BaseModel):
         return self.data_dir / "logs"
 
     @property
+    def eval_corpora_dir(self) -> Path:
+        return self.data_dir / "eval" / "corpora"
+
+    @property
     def enabled_feeds(self) -> list[FeedSourceSettings]:
         return [feed for feed in self.feeds if feed.enabled]

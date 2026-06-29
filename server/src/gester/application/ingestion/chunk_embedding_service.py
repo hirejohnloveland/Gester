@@ -1,14 +1,22 @@
+"""Embedding stage of the ingestion pipeline.
+
+Generates vectors for stored chunks and upserts them into Qdrant. Chunk
+text is enriched with parent article title and URL before embedding.
+"""
+
 import logging
 
 from gester.infrastructure.embeddings.embedding_service import EmbeddingService
 from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
-from gester.infrastructure.storage.vector.qdrant_vector_store import QdrantVectorStore
 from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
+from gester.infrastructure.storage.vector.qdrant_vector_store import QdrantVectorStore
 
 logger = logging.getLogger(__name__)
 
 
 class ChunkEmbeddingService:
+    """Embeds source-item chunks and indexes them for vector search."""
+
     def __init__(
         self,
         chunk_repository: SourceItemChunkRepository,
@@ -22,6 +30,10 @@ class ChunkEmbeddingService:
         self._vector_store = vector_store
 
     def embed_chunks(self, rebuild: bool = False) -> int:
+        """Embed unembedded chunks, or all chunks when ``rebuild`` is True.
+
+        Returns the number of chunks successfully embedded.
+        """
         if rebuild:
             self._vector_store.clear_collection()
             chunks = self._chunk_repository.get_all()

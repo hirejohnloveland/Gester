@@ -1,6 +1,15 @@
+"""Splits raw article text into overlapping character-based chunks."""
+
 from gester.domain.models.text_chunk import TextChunk
 
+
 class TextChunkingService:
+    """Fixed-size text chunker with overlap and word-boundary alignment.
+
+    ``chunk_size`` and ``overlap`` defaults are for direct construction (e.g.
+    tests). The running app supplies values from ``settings.chunking``.
+    """
+
     def __init__(
         self,
         chunk_size: int = 1000,
@@ -17,8 +26,8 @@ class TextChunkingService:
 
         self._chunk_size = chunk_size
         self._overlap = overlap
-
     def chunk(self, text: str) -> list[TextChunk]:
+        """Return ordered chunks for ``text``, or an empty list when blank."""
         if text is None or text.strip() == "":
             return []
 

@@ -4,6 +4,7 @@ from fastapi import Depends, Request
 from qdrant_client.models import Distance
 from sqlalchemy.orm import sessionmaker
 
+from gester.application.evaluation.evaluation_corpus_service import EvaluationCorpusService
 from gester.application.content.source_item_chunk_query_service import SourceItemChunkQueryService
 from gester.application.content.source_item_query_service import SourceItemQueryService
 from gester.application.ingestion.chunk_embedding_service import ChunkEmbeddingService
@@ -17,6 +18,7 @@ from gester.infrastructure.embeddings.embedding_service import EmbeddingService
 from gester.infrastructure.extraction.article_extractor import ArticleExtractor
 from gester.infrastructure.feeds.rss_reader import RssReader
 from gester.infrastructure.llm.ollama_client import OllamaClient
+from gester.infrastructure.storage.eval.eval_corpus_file_store import EvalCorpusFileStore
 from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
 from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
 from gester.infrastructure.storage.vector.qdrant_vector_store import QdrantVectorStore
@@ -189,3 +191,21 @@ def get_source_item_chunk_query_service(
     repository: SourceItemChunkRepositoryDep,
 ) -> SourceItemChunkQueryService:
     return SourceItemChunkQueryService(repository)
+
+
+def get_eval_corpus_file_store(settings: SettingsDep) -> EvalCorpusFileStore:
+    return EvalCorpusFileStore(settings.eval_corpora_dir)
+
+
+def get_evaluation_corpus_service(
+    settings: SettingsDep,
+    source_item_repository: SourceItemRepositoryDep,
+    chunk_repository: SourceItemChunkRepositoryDep,
+    corpus_file_store: Annotated[EvalCorpusFileStore, Depends(get_eval_corpus_file_store)],
+) -> EvaluationCorpusService:
+    return EvaluationCorpusService(
+        settings=settings,
+        source_item_repository=source_item_repository,
+        chunk_repository=chunk_repository,
+        corpus_file_store=corpus_file_store,
+    )

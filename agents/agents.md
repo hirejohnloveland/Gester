@@ -67,13 +67,14 @@ Gester/
 ├── server/src/gester/
 │   ├── app.py           # Composition root: loads settings, builds DB, includes routers, startup
 │   ├── api/
-│   │   ├── routers/     # FastAPI APIRouter modules (content, ingestion, retrieval)
+│   │   ├── routers/     # FastAPI APIRouter modules (content, ingestion, retrieval, evaluation)
 │   │   └── dependencies.py  # Depends providers that assemble services from settings
 │   ├── configuration/   # Settings models and loader (AppSettings, settings_loader)
 │   ├── domain/models/   # Business concepts (SourceItem, SourceItemChunk, …)
 │   ├── application/     # Use cases and orchestration
 │   │   ├── content/     # Read/query services for stored items and chunks
 │   │   ├── ingestion/   # RSS ingestion, chunking, embedding
+│   │   ├── evaluation/  # Retrieval evaluation corpus snapshots
 │   │   ├── retrieval/   # Search and RAG answer services
 │   │   └── responses/   # API response models
 │   └── infrastructure/  # External integrations
@@ -94,7 +95,8 @@ they call application services and map to response models. No business
 logic or direct infrastructure access. `app.py` is the composition root
 that includes the routers and runs startup.
 
-Current routers: `content_router`, `ingestion_router`, `retrieval_router`.
+Current routers: `content_router`, `ingestion_router`, `retrieval_router`,
+`evaluation_router`.
 
 ### domain
 

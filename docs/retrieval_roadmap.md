@@ -36,7 +36,25 @@ The purpose of this roadmap is to make retrieval quality observable, testable, a
 
 ---
 
-# Phase 3.1 - Retrieval Evaluation Foundation
+## Status Legend
+
+Status reflects implementation verified against the codebase as of
+2026-06-28, mapping each milestone's "Done When" criteria to working
+code.
+
+-   **Complete** — all material "Done When" criteria are met in code
+-   **In progress** — partially implemented; remaining gaps noted inline
+-   **Not started** — no implementing code yet
+
+Current position: vector search, article deduplication, metadata-enriched
+embeddings (title + URL), and grounded `/ask` responses with citations
+are working. Configurable fixed-size chunking and staged re-chunk/re-embed
+endpoints exist. **No evaluation harness, golden questions, or corpus
+versioning yet** — Phase 1 is the immediate next work.
+
+---
+
+# Phase 1 - Retrieval Evaluation Foundation — In progress
 
 ## Purpose
 
@@ -44,7 +62,13 @@ Before improving retrieval, Gester needs a way to measure whether retrieval is a
 
 This phase creates a repeatable evaluation harness for testing search quality across known queries, expected articles, and expected chunks.
 
-## Milestone 3.1.1 - Freeze an Evaluation Corpus
+## Milestone 1.1 - Freeze an Evaluation Corpus — Complete
+
+_Done: `POST /eval/corpora` snapshots current articles and chunks to
+`data/eval/corpora/{version}.json` with chunking/embedding config,
+ingestion/embedding timestamps, article metadata, and ID lists.
+`GET /eval/corpora` lists snapshots; `GET /eval/corpora/{version}` loads
+one. Default version name: `baseline_YYYY_MM_DD`._
 
 ### Purpose
 
@@ -88,7 +112,7 @@ The same query against the same corpus and configuration should produce the same
 
 ---
 
-## Milestone 3.1.2 - Create a Golden Question Set
+## Milestone 1.2 - Create a Golden Question Set — Not started
 
 ### Purpose
 
@@ -171,7 +195,7 @@ For this question, these are the sources I expected Gester to retrieve.
 
 ---
 
-## Milestone 3.1.3 - Build the Retrieval Evaluation Command
+## Milestone 1.3 - Build the Retrieval Evaluation Command — Not started
 
 ### Purpose
 
@@ -266,7 +290,7 @@ MRR: 1.0
 
 ---
 
-# Phase 3.2 - Baseline Retrieval Inspection
+# Phase 2 - Baseline Retrieval Inspection — In progress
 
 ## Purpose
 
@@ -274,7 +298,12 @@ Understand how the current retrieval system fails before adding new retrieval te
 
 This phase uses the evaluation harness to classify retrieval failures.
 
-## Milestone 3.2.1 - Add Search Debug Output
+## Milestone 2.1 - Add Search Debug Output — In progress
+
+_Done: `GET /search` returns score, chunk ID, source item ID, title, URL,
+and full chunk text; `GET /items/{id}/chunks` lists stored chunks.
+Remaining: no dedicated debug export (rank, published date, chunk length,
+saved inspection file); no side-by-side retrieval-setting comparison._
 
 ### Purpose
 
@@ -318,7 +347,7 @@ Was the chunk missing useful context?
 
 ---
 
-## Milestone 3.2.2 - Classify Retrieval Failures
+## Milestone 2.2 - Classify Retrieval Failures — Not started
 
 ### Purpose
 
@@ -370,7 +399,7 @@ Is retrieval bad?
 
 ---
 
-# Phase 3.3 - Source Text Quality
+# Phase 3 - Source Text Quality — In progress
 
 ## Purpose
 
@@ -378,7 +407,7 @@ Improve the quality of stored source text before tuning retrieval algorithms.
 
 Bad source text creates bad chunks, bad embeddings, bad search results, and bad answers.
 
-## Milestone 3.3.1 - Inspect Cleaned Article Text
+## Milestone 3.1 - Inspect Cleaned Article Text — Not started
 
 ### Purpose
 
@@ -429,7 +458,12 @@ percent_failed_extraction
 
 ---
 
-## Milestone 3.3.2 - Improve Article Cleaning
+## Milestone 3.2 - Improve Article Cleaning — In progress
+
+_Done: Trafilatura-based extraction in `ArticleExtractor`; RSS ingestion
+falls back to feed summary when extraction fails. Remaining: no separate
+`raw_html` / `cleaned_text` storage, no extractor version metadata, no
+re-cleaning pipeline._
 
 ### Purpose
 
@@ -480,7 +514,7 @@ Fewer retrieval results caused by source_text_noisy.
 
 ---
 
-# Phase 3.4 - Chunking Experiments
+# Phase 4 - Chunking Experiments — In progress
 
 ## Purpose
 
@@ -488,7 +522,12 @@ Learn how chunk design affects retrieval quality.
 
 Chunking is one of the most important parts of RAG because chunks are the atomic evidence units used by retrieval and answer generation.
 
-## Milestone 3.4.1 - Baseline Current Chunking
+## Milestone 4.1 - Baseline Current Chunking — In progress
+
+_Done: `TextChunkingService` (1000 chars / 200 overlap from
+`config/settings.yaml`); chunk stats derivable from stored chunks.
+Remaining: baseline retrieval metrics and failure categories not recorded
+(no eval harness yet)._
 
 ### Purpose
 
@@ -520,7 +559,12 @@ This is the baseline for future chunking experiments.
 
 ---
 
-## Milestone 3.4.2 - Fixed-Size Chunking Experiment
+## Milestone 4.2 - Fixed-Size Chunking Experiment — In progress
+
+_Done: chunk size and overlap configurable via settings; `POST
+/process/chunks/reset` and `POST /process/chunks` support re-chunking;
+`POST /process/embeddings?rebuild=true` re-embeds. Remaining: no eval
+command to compare chunking configurations._
 
 ### Purpose
 
@@ -568,7 +612,7 @@ Overlap may help continuity but increase duplicates.
 
 ---
 
-## Milestone 3.4.3 - Structure-Aware Chunking Experiment
+## Milestone 4.3 - Structure-Aware Chunking Experiment — Not started
 
 ### Purpose
 
@@ -614,7 +658,7 @@ Chunks should be easier to understand and more useful as evidence.
 
 ---
 
-# Phase 3.5 - Metadata-Enriched Chunks
+# Phase 5 - Metadata-Enriched Chunks — In progress
 
 ## Purpose
 
@@ -622,7 +666,13 @@ Add contextual headers to chunks so retrieval has more information than isolated
 
 Many chunks are ambiguous by themselves. Metadata-enriched chunks help the embedding model and keyword search understand what the chunk is about.
 
-## Milestone 3.5.1 - Add Chunk Headers
+## Milestone 5.1 - Add Chunk Headers — In progress
+
+_Done: `ChunkEmbeddingService` builds embedding text from title + URL +
+chunk body without modifying stored chunk text; answers cite original
+chunk content. Remaining: embedding text is not persisted as a separate
+field; headers omit source name, published date, and section; no A/B eval
+against raw-chunk embeddings._
 
 ### Purpose
 
@@ -687,7 +737,7 @@ Queries involving article topic, source, or section should improve.
 
 ---
 
-## Milestone 3.5.2 - Add Keywords and Entities
+## Milestone 5.2 - Add Keywords and Entities — Not started
 
 ### Purpose
 
@@ -775,7 +825,7 @@ Queries involving exact tools, model names, libraries, and acronyms should impro
 
 ---
 
-# Phase 3.6 - Article Summaries and Hierarchical Retrieval
+# Phase 6 - Article Summaries and Hierarchical Retrieval — Not started
 
 ## Purpose
 
@@ -788,7 +838,7 @@ Summary = helps find likely articles
 Chunk = evidence for final answer
 ```
 
-## Milestone 3.6.1 - Generate Article Summaries
+## Milestone 6.1 - Generate Article Summaries — Not started
 
 ### Purpose
 
@@ -856,7 +906,7 @@ misleading_summary_rate
 
 ---
 
-## Milestone 3.6.2 - Create Article Summary Search
+## Milestone 6.2 - Create Article Summary Search — Not started
 
 ### Purpose
 
@@ -911,7 +961,7 @@ Broad conceptual questions should identify better source articles.
 
 ---
 
-## Milestone 3.6.3 - Summary-Guided Chunk Retrieval
+## Milestone 6.3 - Summary-Guided Chunk Retrieval — Not started
 
 ### Purpose
 
@@ -953,7 +1003,7 @@ Broad questions should retrieve better article sets.
 
 ---
 
-# Phase 3.7 - BM25 / Keyword Search
+# Phase 7 - BM25 / Keyword Search — Not started
 
 ## Purpose
 
@@ -965,7 +1015,7 @@ BM25 finds exact term matches.
 
 Both are useful.
 
-## Milestone 3.7.1 - Add Local Full-Text Index
+## Milestone 7.1 - Add Local Full-Text Index — Not started
 
 ### Purpose
 
@@ -1049,7 +1099,7 @@ Exact tool, model, and product queries should improve.
 
 ---
 
-## Milestone 3.7.2 - Add Field Boosting
+## Milestone 7.2 - Add Field Boosting — Not started
 
 ### Purpose
 
@@ -1098,13 +1148,13 @@ Important title and keyword matches should move higher in results.
 
 ---
 
-# Phase 3.8 - Hybrid Retrieval
+# Phase 8 - Hybrid Retrieval — In progress
 
 ## Purpose
 
 Combine vector search, BM25 search, and summary-guided retrieval into a stronger candidate generation pipeline.
 
-## Milestone 3.8.1 - Merge Vector and BM25 Results
+## Milestone 8.1 - Merge Vector and BM25 Results — Not started
 
 ### Purpose
 
@@ -1177,7 +1227,11 @@ Hybrid retrieval should outperform vector-only retrieval across the full eval se
 
 ---
 
-## Milestone 3.8.2 - Add Article Grouping and Deduplication
+## Milestone 8.2 - Add Article Grouping and Deduplication — Complete
+
+_Done: `SearchService` over-fetches then deduplicates by source item ID
+(`dedupe_by_article`, default true); configurable via settings and
+`/search` query params._
 
 ### Purpose
 
@@ -1228,7 +1282,7 @@ Results should include more useful source diversity without losing important rep
 
 ---
 
-# Phase 3.9 - Parent-Child Retrieval
+# Phase 9 - Parent-Child Retrieval — Not started
 
 ## Purpose
 
@@ -1236,7 +1290,7 @@ Search over small focused chunks while sending larger surrounding context to the
 
 This helps balance precision and context.
 
-## Milestone 3.9.1 - Add Parent-Child Chunk Structure
+## Milestone 9.1 - Add Parent-Child Chunk Structure — Not started
 
 ### Purpose
 
@@ -1296,7 +1350,7 @@ Search remains precise while answers get better supporting context.
 
 ---
 
-# Phase 3.10 - Local Reranking
+# Phase 10 - Local Reranking — Not started
 
 ## Purpose
 
@@ -1314,7 +1368,7 @@ Reranking asks:
 What actually answers this question?
 ```
 
-## Milestone 3.10.1 - Add Local Reranker
+## Milestone 10.1 - Add Local Reranker — Not started
 
 ### Purpose
 
@@ -1362,7 +1416,7 @@ Correct chunks should move higher in the ranking.
 
 ---
 
-# Phase 3.11 - Query Rewriting and Expansion
+# Phase 11 - Query Rewriting and Expansion — Not started
 
 ## Purpose
 
@@ -1370,7 +1424,7 @@ Improve retrieval when the user’s wording does not match source wording.
 
 This should be added after baseline retrieval, BM25, hybrid retrieval, and reranking are measurable.
 
-## Milestone 3.11.1 - Add Query Expansion
+## Milestone 11.1 - Add Query Expansion — Not started
 
 ### Purpose
 
@@ -1421,7 +1475,7 @@ Queries with vocabulary mismatch should improve.
 
 ---
 
-## Milestone 3.11.2 - Add Multi-Query Retrieval
+## Milestone 11.2 - Add Multi-Query Retrieval — Not started
 
 ### Purpose
 
@@ -1469,7 +1523,7 @@ Multi-query retrieval can improve recall but may introduce noise.
 
 ---
 
-# Phase 3.12 - Context Assembly
+# Phase 12 - Context Assembly — In progress
 
 ## Purpose
 
@@ -1477,7 +1531,12 @@ Improve how retrieved chunks are turned into LLM context.
 
 Good retrieval can still produce bad answers if context assembly is poor.
 
-## Milestone 3.12.1 - Source Block Formatting
+## Milestone 12.1 - Source Block Formatting — In progress
+
+_Done: `AnswerService._build_context` formats `[Source N]` blocks with
+title, URL, and chunk text; prompt instructs inline `[Source N]`
+citations. Remaining: published date and chunk ID not included in context
+blocks._
 
 ### Purpose
 
@@ -1517,7 +1576,12 @@ hallucination rate
 
 ---
 
-## Milestone 3.12.2 - Context Packing Strategy
+## Milestone 12.2 - Context Packing Strategy — In progress
+
+_Done: top-k article-diverse chunks via deduplicated search results;
+timing logged in `/ask` response. Remaining: context strategy not
+configurable; no context token usage logging; no comparison of packing
+strategies._
 
 ### Purpose
 
@@ -1559,13 +1623,18 @@ More context is not always better.
 
 ---
 
-# Phase 3.13 - Grounded Answer Generation
+# Phase 13 - Grounded Answer Generation — In progress
 
 ## Purpose
 
 Generate answers that are explicitly grounded in retrieved source material.
 
-## Milestone 3.13.1 - Add Grounded Answer Prompt
+## Milestone 13.1 - Add Grounded Answer Prompt — Complete
+
+_Done: `AnswerService` prompt requires sources-only answers, inline
+`[Source N]` citations, explicit insufficient-evidence response, and no
+outside knowledge; `/ask` returns source metadata mapped to chunk and
+article IDs; direct-text-evidence gate reduces ungrounded generation._
 
 ### Purpose
 
@@ -1615,7 +1684,7 @@ ungrounded
 
 ---
 
-## Milestone 3.13.2 - Answer Evaluation Set
+## Milestone 13.2 - Answer Evaluation Set — Not started
 
 ### Purpose
 
@@ -1655,13 +1724,13 @@ insufficient evidence handling rate
 
 ---
 
-# Phase 3.14 - Citation Validation
+# Phase 14 - Citation Validation — Not started
 
 ## Purpose
 
 Ensure that cited sources actually support the answer.
 
-## Milestone 3.14.1 - Validate Cited Source IDs
+## Milestone 14.1 - Validate Cited Source IDs — Not started
 
 ### Purpose
 
@@ -1685,7 +1754,7 @@ citation maps to retrieved context: yes/no
 
 ---
 
-## Milestone 3.14.2 - Manual Citation Support Review
+## Milestone 14.2 - Manual Citation Support Review — Not started
 
 ### Purpose
 
@@ -1710,13 +1779,13 @@ source_misused
 
 ---
 
-# Phase 3.15 - Regression Testing
+# Phase 15 - Regression Testing — Not started
 
 ## Purpose
 
 Prevent future retrieval improvements from breaking previously working queries.
 
-## Milestone 3.15.1 - Add Retrieval Regression Tests
+## Milestone 15.1 - Add Retrieval Regression Tests — Not started
 
 ### Purpose
 
@@ -1752,13 +1821,13 @@ without causing unacceptable regressions
 
 ---
 
-# Phase 3.16 - Experiment Logging
+# Phase 16 - Experiment Logging — Not started
 
 ## Purpose
 
 Maintain a record of retrieval experiments and results.
 
-## Milestone 3.16.1 - Create Retrieval Experiment Log
+## Milestone 16.1 - Create Retrieval Experiment Log — Not started
 
 ### Purpose
 
@@ -1799,7 +1868,7 @@ Keep as baseline.
 
 ---
 
-# Phase 3.17 - Personalization Signals
+# Phase 17 - Personalization Signals — Not started
 
 ## Purpose
 
@@ -1807,7 +1876,7 @@ Eventually use user behavior to improve ranking without hiding baseline retrieva
 
 This should come after retrieval is already reasonably strong.
 
-## Milestone 3.17.1 - Track User Engagement
+## Milestone 17.1 - Track User Engagement — Not started
 
 ### Purpose
 
@@ -1837,7 +1906,7 @@ This milestone is judged by data quality, not ranking improvement.
 
 ---
 
-## Milestone 3.17.2 - Personalized Ranking Experiment
+## Milestone 17.2 - Personalized Ranking Experiment — Not started
 
 ### Purpose
 
@@ -1957,46 +2026,46 @@ no_good_answer_in_corpus
 ## Immediate Next Steps
 
 ```text
-1. Freeze the current corpus
-2. Create 25–50 golden questions
-3. Build eval-retrieval command
-4. Save top-k retrieval results
-5. Add failure classification
-6. Inspect source text quality
+1. Freeze the current corpus                              — Complete
+2. Create 25–50 golden questions                          — Not started
+3. Build eval-retrieval command                           — Not started
+4. Save top-k retrieval results                           — Not started
+5. Add failure classification                           — Not started
+6. Inspect source text quality                            — Not started
 ```
 
 ## Next Retrieval Improvements
 
 ```text
-7. Test chunking strategies
-8. Add metadata-enriched chunk headers
-9. Generate article summaries
-10. Add article summary search
-11. Add BM25 / keyword search
-12. Add hybrid retrieval
-13. Add article grouping and dedupe
-14. Add parent-child retrieval
-15. Add local reranking
+7. Test chunking strategies                               — In progress
+8. Add metadata-enriched chunk headers                    — In progress
+9. Generate article summaries                             — Not started
+10. Add article summary search                            — Not started
+11. Add BM25 / keyword search                             — Not started
+12. Add hybrid retrieval                                  — Not started
+13. Add article grouping and dedupe                       — Complete
+14. Add parent-child retrieval                            — Not started
+15. Add local reranking                                   — Not started
 ```
 
 ## Answer Quality Work
 
 ```text
-16. Improve context assembly
-17. Add grounded answer prompt
-18. Evaluate answer quality separately
-19. Validate citations
-20. Add regression tests
+16. Improve context assembly                              — In progress
+17. Add grounded answer prompt                            — Complete
+18. Evaluate answer quality separately                    — Not started
+19. Validate citations                                    — Not started
+20. Add regression tests                                  — Not started
 ```
 
 ## Later Learning Work
 
 ```text
-21. Add query expansion
-22. Add multi-query retrieval
-23. Track engagement
-24. Test personalized ranking
-25. Add higher-level research workflows
+21. Add query expansion                                   — Not started
+22. Add multi-query retrieval                             — Not started
+23. Track engagement                                      — Not started
+24. Test personalized ranking                             — Not started
+25. Add higher-level research workflows                   — Not started
 ```
 
 ---
@@ -2006,20 +2075,20 @@ no_good_answer_in_corpus
 Gester’s retrieval system should be considered meaningfully improved when:
 
 ```text
-- A fixed evaluation corpus exists
-- A golden question set exists
-- Retrieval quality can be measured repeatedly
-- Retrieval failures can be classified
-- Chunking strategies have been compared
-- Metadata-enriched chunks have been tested
-- Article summaries support article discovery
-- BM25 keyword search works locally
-- Hybrid retrieval beats vector-only retrieval
-- Duplicate-heavy results are controlled
-- Retrieved context includes source metadata
-- Answers cite source material
-- Answer evaluation is separate from retrieval evaluation
-- Regression tests protect known-good queries
+- A fixed evaluation corpus exists                              — Complete
+- A golden question set exists                                    — Not started
+- Retrieval quality can be measured repeatedly                    — Not started
+- Retrieval failures can be classified                            — Not started
+- Chunking strategies have been compared                          — In progress
+- Metadata-enriched chunks have been tested                       — In progress
+- Article summaries support article discovery                     — Not started
+- BM25 keyword search works locally                               — Not started
+- Hybrid retrieval beats vector-only retrieval                    — Not started
+- Duplicate-heavy results are controlled                          — Complete
+- Retrieved context includes source metadata                      — Complete
+- Answers cite source material                                    — Complete
+- Answer evaluation is separate from retrieval evaluation         — Not started
+- Regression tests protect known-good queries                     — Not started
 ```
 
 The goal is not to claim the system is perfect.

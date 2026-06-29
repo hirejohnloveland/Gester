@@ -1,3 +1,9 @@
+"""Standalone chunking stage of the ingestion pipeline.
+
+Chunks source items already stored in SQLite without re-fetching external
+content. Used to backfill missing chunks or re-chunk after settings change.
+"""
+
 import logging
 
 from gester.application.ingestion.text_chunking_service import TextChunkingService
@@ -10,6 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 class SourceItemChunkingService:
+    """Chunks stored source items that do not yet have chunk rows."""
+
     def __init__(
         self,
         source_item_repository: SourceItemRepository,
@@ -23,6 +31,10 @@ class SourceItemChunkingService:
         self._vector_store = vector_store
 
     def chunk_missing_source_items(self) -> int:
+        """Chunk every source item that has content but no chunks yet.
+
+        Returns the number of source items newly chunked.
+        """
         logger.info("Chunking run started for source items missing chunks")
 
         source_items = self._source_item_repository.get_all_with_content()
@@ -57,6 +69,10 @@ class SourceItemChunkingService:
         return chunked_item_count
 
     def reset_chunks(self) -> int:
+        """Delete all chunks from SQLite and clear the vector store.
+
+        Returns the number of chunk rows deleted.
+        """
         deleted_chunk_count = self._chunk_repository.delete_all()
         self._vector_store.clear_collection()
 

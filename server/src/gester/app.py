@@ -2,7 +2,7 @@ import logging
 
 from fastapi import FastAPI
 
-from gester.api.routers import content_router, ingestion_router, retrieval_router
+from gester.api.routers import content_router, evaluation_router, ingestion_router, retrieval_router
 from gester.configuration.settings_loader import load_settings
 from gester.infrastructure.logging.logging_configurator import configure_logging
 from gester.infrastructure.storage.sqlite.sqlite_db import (
@@ -18,6 +18,7 @@ app = FastAPI(title="Gester API")
 app.include_router(content_router.router)
 app.include_router(ingestion_router.router)
 app.include_router(retrieval_router.router)
+app.include_router(evaluation_router.router)
 
 
 @app.on_event("startup")

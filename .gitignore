@@ -21,6 +21,7 @@ data/gester.db-shm
 data/qdrant/
 data/articles/
 data/logs/
+data/eval/
 
 # IDE / OS
 .vscode/

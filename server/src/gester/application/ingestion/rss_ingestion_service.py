@@ -1,3 +1,9 @@
+"""Orchestrates RSS feed ingestion into stored source items and chunks.
+
+Pipeline: read feed → apply age/count limits → extract article text →
+persist new items → chunk and store.
+"""
+
 import logging
 from datetime import datetime, timedelta, timezone
 
@@ -14,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 
 class RssIngestionService:
+    """Acquisition stage: ingest RSS feed entries into source items and chunks."""
+
     def __init__(
         self,
         rss_reader: RssReader,
@@ -38,6 +46,11 @@ class RssIngestionService:
         max_age_days: int | None = None,
         max_items_per_feed: int | None = None,
     ) -> int:
+        """Ingest new entries from ``feed_url``.
+
+        Skips URLs already stored. Optional arguments override instance
+        defaults for this run. Returns the count of newly saved items.
+        """
         effective_max_age_days = (
             max_age_days if max_age_days is not None else self._max_age_days
         )
@@ -62,53 +75,60 @@ class RssIngestionService:
         saved_count = 0
 
         for rss_item in rss_items:
-            raw_content = self._article_extractor.extract(rss_item.link)
-
-            if raw_content is None:
-                logger.warning(
-                    "Extraction returned no content for %s; falling back to feed summary",
-                    rss_item.link,
-                )
-                raw_content = rss_item.summary
-
             source_item = SourceItem(
                 source_type=rss_item.source_type,
                 title=rss_item.title,
                 url=rss_item.link,
-                raw_content=raw_content,
+                raw_content=self._resolve_content(rss_item),
                 published_at=rss_item.published_at,
             )
 
-            saved = self._repository.add_if_not_exists(source_item)
-
-            if saved is None:
-                logger.debug("Skipped duplicate source item %s", rss_item.link)
-                continue
-
-            saved_count += 1
-
-            chunks = self._chunking_service.chunk(saved.raw_content)
-
-            for index, chunk in enumerate(chunks):
-                source_item_chunk = SourceItemChunk(
-                    source_item_id=saved.id,
-                    chunk_index=index,
-                    chunk_text=chunk.chunk_text,
-                    char_start=chunk.char_start,
-                    char_end=chunk.char_end,
-                )
-
-                self._chunk_repository.add(source_item_chunk)
-
-            logger.debug(
-                "Created %d chunk(s) for source item %s", len(chunks), saved.url
-            )
+            if self._save_item_with_chunks(source_item):
+                saved_count += 1
 
         logger.info(
             "Ingestion finished for feed %s; %d new item(s) saved", feed_url, saved_count
         )
 
         return saved_count
+
+    def _resolve_content(self, rss_item: RssItem) -> str | None:
+        raw_content = self._article_extractor.extract(rss_item.link)
+
+        if raw_content is None:
+            logger.warning(
+                "Extraction returned no content for %s; falling back to feed summary",
+                rss_item.link,
+            )
+            raw_content = rss_item.summary
+
+        return raw_content
+
+    def _save_item_with_chunks(self, source_item: SourceItem) -> bool:
+        saved = self._repository.add_if_not_exists(source_item)
+
+        if saved is None:
+            logger.debug("Skipped duplicate source item %s", source_item.url)
+            return False
+
+        chunks = self._chunking_service.chunk(saved.raw_content)
+
+        for index, chunk in enumerate(chunks):
+            source_item_chunk = SourceItemChunk(
+                source_item_id=saved.id,
+                chunk_index=index,
+                chunk_text=chunk.chunk_text,
+                char_start=chunk.char_start,
+                char_end=chunk.char_end,
+            )
+
+            self._chunk_repository.add(source_item_chunk)
+
+        logger.debug(
+            "Created %d chunk(s) for source item %s", len(chunks), saved.url
+        )
+
+        return True
 
     def _apply_ingestion_limits(
         self,
