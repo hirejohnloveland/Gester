@@ -1,0 +1,314 @@
+﻿.\.venv\Scripts\python.exe : Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to 
+enable higher rate limits and faster downloads.
+At C:\Users\John.Loveland\AppData\Local\Temp\ps-script-80cf2382-c8da-4322-b7d5-6f375b4de1cc.ps1:112 char:81
++ ... NG='utf-8'; .\.venv\Scripts\python.exe scripts\batch_validate_golden. ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: You ar...ster downloads.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights: 100%|ΓûêΓûêΓûêΓûêΓûêΓûêΓûêΓûêΓûêΓûê| 199/199 [00:00<00:00, 12600.83it/s]
+Pending: 18 questions
+
+========================================================================
+ID: zigbee_mesh_repeaters | direct_lookup | dedupe=False
+Q: What advice does the corpus give about Zigbee mesh networks?
+Current expected: [9]
+Top chunks by article count: {9: 8, 33: 8, 27: 4}
+Deduped top 10:
+   1 0.7945 art=9 cnt=8 * | Your Zigbee mesh is drowning in cheap repeaters, and here's how t
+   2 0.7520 art=33 cnt=8 | Zigbee solved the smart-home battery problem years ago, and Matte
+   3 0.7088 art=27 cnt=4 | Your mesh nodes are talking over Wi-Fi when they could be wired, 
+  expected 9 deduped rank: 1
+
+========================================================================
+ID: proton_drive_linux | direct_lookup | dedupe=False
+Q: What does the corpus say about Proton Drive improvements for Linux users?
+Current expected: [20]
+Top chunks by article count: {35: 8, 951: 4, 20: 3, 56: 2, 15: 2}
+Deduped top 10:
+   1 0.8316 art=20 cnt=3 * | Proton Drive just got 3x faster, and Linux users will finally get
+   2 0.7317 art=35 cnt=8 | Fedora's Atomic desktop model is quietly becoming the future of L
+   3 0.7148 art=951 cnt=4 | Working around dragons with the Lemote Yeeloong laptop and OpenBS
+   4 0.7053 art=56 cnt=2 | I ignored storage discipline in Proxmox until a restore actually 
+   5 0.7012 art=47 cnt=1 | I switched my local LLM setup to Ollama's new MLX engine, and my 
+   6 0.6987 art=15 cnt=2 | I stopped adding hardware to my home lab when I realized fewer mo
+  expected 20 deduped rank: 1
+
+========================================================================
+ID: rtx_50_series | direct_lookup | dedupe=False
+Q: What does the corpus say about the RTX 50 series?
+Current expected: [30]
+Top chunks by article count: {30: 12, 898: 3, 24: 3, 21: 2}
+Deduped top 10:
+   1 0.7708 art=30 cnt=12 * | 18 months later, the RTX 50 series' biggest feature is still wait
+   2 0.6835 art=898 cnt=3 | Introducing a Recommended Agent in AI Chat, With Codex as the Cur
+   3 0.6822 art=24 cnt=3 | Mid-range GPUs have largely dodged the memory crisis, but not for
+   4 0.6613 art=21 cnt=2 | AMD shipped Nvidia's new AI laptop over a year ago, and the softw
+  expected 30 deduped rank: 1
+
+========================================================================
+ID: chromebook_windows_95 | direct_lookup | dedupe=False
+Q: What does the corpus say about making a Chromebook look like Windows 95?
+Current expected: [29]
+Top chunks by article count: {23: 8, 29: 6, 11: 2, 12: 1, 951: 1}
+Deduped top 10:
+   1 0.8238 art=29 cnt=6 * | I gave my old Chromebook new life by making it look like Windows 
+   2 0.6838 art=23 cnt=8 | Windows 95 changed computing forever, and the Virtual OS Museum i
+   3 0.6579 art=12 cnt=1 | Is the Googlebook already doomed to fail?
+   4 0.6457 art=951 cnt=1 | Working around dragons with the Lemote Yeeloong laptop and OpenBS
+   5 0.6402 art=11 cnt=2 | I created an "Everything" notebook in NotebookLM, and it's one of
+   6 0.6344 art=43 cnt=1 | I replaced NotebookLM with a self-hosted alternative for a week, 
+   7 0.6341 art=189 cnt=1 | Building a safe, effective sandbox to enable Codex on Windows
+  expected 29 deduped rank: 1
+
+========================================================================
+ID: home_lab_simplicity | direct_lookup | dedupe=False
+Q: What does the corpus say about simplifying a home lab?
+Current expected: [15]
+Top chunks by article count: {15: 7, 301: 4, 366: 4, 49: 2, 288: 1}
+Deduped top 10:
+   1 0.7170 art=301 cnt=4 | From model to agent: Equipping the Responses API with a computer 
+   2 0.7053 art=288 cnt=1 | Inside our approach to the Model Spec
+   3 0.7003 art=15 cnt=7 * | I stopped adding hardware to my home lab when I realized fewer mo
+   4 0.6970 art=88 cnt=1 | Quoting Georgi Gerganov
+   5 0.6943 art=49 cnt=2 | I split my work across five Claude Code subagents and burned thro
+   6 0.6937 art=366 cnt=4 | Unrolling the Codex agent loop
+   7 0.6864 art=96 cnt=1 | I automated my job (and it made me a better leader)
+  expected 15 deduped rank: 3
+
+========================================================================
+ID: prompt_injection_defense | concept | dedupe=True
+Q: What does the corpus say about defending against prompt injection attacks?
+Current expected: [19]
+Top chunks by article count: {461: 1, 392: 1, 300: 1, 587: 1, 304: 1}
+Deduped top 10:
+   1 0.8239 art=461 cnt=1 | Understanding prompt injections: a frontier security challenge
+   2 0.7995 art=392 cnt=1 | Continuously hardening ChatGPT Atlas against prompt injection
+   3 0.7757 art=300 cnt=1 | Designing AI agents to resist prompt injection
+   4 0.7679 art=587 cnt=1 | Introducing ChatGPT agent
+   5 0.7551 art=304 cnt=1 | Improving instruction hierarchy in frontier LLMs
+   6 0.7507 art=548 cnt=1 | OpenAI and Anthropic share findings from a joint safety evaluatio
+   7 0.7482 art=340 cnt=1 | Introducing Lockdown Mode and Elevated Risk labels in ChatGPT
+   8 0.7459 art=19 cnt=1 * | ChatGPT just gave Free users a powerful defense against prompt in
+   9 0.7454 art=690 cnt=1 | Operator System Card
+  10 0.7439 art=790 cnt=1 | The VibeSec Reckoning
+  expected 19 deduped rank: 8
+
+========================================================================
+ID: open_source_alternatives | concept | dedupe=True
+Q: What open source software alternatives are discussed in the corpus?
+Current expected: [22]
+Top chunks by article count: {307: 1, 119: 1, 634: 1, 98: 1, 548: 1}
+Deduped top 10:
+   1 0.7280 art=307 cnt=1 | Codex Security: now in research preview
+   2 0.7243 art=119 cnt=1 | Patch the Planet: a Daybreak initiative to support open source ma
+   3 0.7213 art=634 cnt=1 | Introducing OpenAI o3 and o4-mini
+   4 0.7187 art=98 cnt=1 | From pledge to practice: Building a more inclusive open source ec
+   5 0.7147 art=548 cnt=1 | OpenAI and Anthropic share findings from a joint safety evaluatio
+   6 0.7144 art=613 cnt=1 | Introducing Codex
+   7 0.7073 art=97 cnt=1 | GitHub joins coalition advocating for fixes to California AI Tran
+   8 0.7054 art=37 cnt=1 | These open-source tools do what Claude charges for, and some do i
+   9 0.7051 art=727 cnt=1 | Introducing canvas, a new way to write and code with ChatGPT.
+  10 0.7046 art=498 cnt=1 | Codex is now generally available
+  expected 22 deduped rank: not in top
+
+========================================================================
+ID: copilot_productivity_workflows | concept | dedupe=True
+Q: What does the corpus say about using Copilot in productivity workflows?
+Current expected: [34]
+Top chunks by article count: {95: 1, 101: 1, 104: 1, 102: 1, 105: 1}
+Deduped top 10:
+   1 0.7930 art=95 cnt=1 | Evaluating performance and efficiency of the GitHub Copilot agent
+   2 0.7754 art=101 cnt=1 | Getting more from each token: How Copilot improves context handli
+   3 0.7606 art=104 cnt=1 | MAI-Code-1-Flash for Copilot Business and Copilot Enterprise
+   4 0.7556 art=102 cnt=1 | What are git worktrees, and why should I use them?
+   5 0.7534 art=105 cnt=1 | Copilot code review: Analysis depth and efficiency updates
+   6 0.7463 art=661 cnt=1 | Nubank elevates customer experiences with OpenAI
+   7 0.7449 art=96 cnt=1 | I automated my job (and it made me a better leader)
+   8 0.7351 art=34 cnt=1 * | I created a complex presentation using Claude Design, Copilot in 
+   9 0.7348 art=792 cnt=1 | Three more static code analysis sensors
+  10 0.7344 art=368 cnt=1 | Inside GPT-5 for Work: How Businesses Use GPT-5
+  expected 34 deduped rank: 8
+
+========================================================================
+ID: ollama_local_llm | proper_noun | dedupe=True
+Q: What does the corpus say about Ollama?
+Current expected: [47]
+Top chunks by article count: {47: 1, 495: 1, 548: 1, 710: 1, 724: 1}
+Deduped top 10:
+   1 0.7160 art=47 cnt=1 * | I switched my local LLM setup to Ollama's new MLX engine, and my 
+   2 0.6971 art=495 cnt=1 | Defining and evaluating political bias in LLMs
+   3 0.6798 art=548 cnt=1 | OpenAI and Anthropic share findings from a joint safety evaluatio
+   4 0.6751 art=710 cnt=1 | OpenAI o1 System Card
+   5 0.6733 art=724 cnt=1 | Evaluating fairness in ChatGPT
+   6 0.6694 art=637 cnt=1 | Introducing GPT-4.1 in the API
+   7 0.6592 art=366 cnt=1 | Unrolling the Codex agent loop
+   8 0.6590 art=467 cnt=1 | Introducing IndQA
+   9 0.6577 art=691 cnt=1 | Computer-Using Agent
+  10 0.6570 art=547 cnt=1 | Collective alignment: public input on our Model Spec
+  expected 47 deduped rank: 1
+
+========================================================================
+ID: claude_code_usage | proper_noun | dedupe=True
+Q: What does the corpus say about Claude Code?
+Current expected: [25, 42]
+Top chunks by article count: {801: 1, 42: 1, 37: 1, 6: 1, 953: 1}
+Deduped top 10:
+   1 0.7364 art=801 cnt=1 | Fragments: April 21
+   2 0.7356 art=42 cnt=1 * | Claude Code learns from my mistakes between sessions now, and my 
+   3 0.7248 art=37 cnt=1 | These open-source tools do what Claude charges for, and some do i
+   4 0.7237 art=6 cnt=1 | Claude Design looks impressive until you actually try to use it
+   5 0.7178 art=953 cnt=1 | I used Claude Code to get a second opinion on my MRI
+   6 0.7142 art=61 cnt=1 | I tested Cursor?s top alternatives after Elon Musk?s SpaceX agree
+   7 0.7140 art=25 cnt=1 * | I used Claude Code to build a utility that fetches files by the w
+   8 0.7114 art=548 cnt=1 | OpenAI and Anthropic share findings from a joint safety evaluatio
+   9 0.7095 art=49 cnt=1 | I split my work across five Claude Code subagents and burned thro
+  10 0.6996 art=28 cnt=1 | I ran Claude Code and Cursor together, and the combination does s
+  expected 25 deduped rank: 7
+  expected 42 deduped rank: 2
+
+========================================================================
+ID: cursor_with_claude_code | proper_noun | dedupe=True
+Q: What does the corpus say about running Claude Code and Cursor together?
+Current expected: [28]
+Top chunks by article count: {28: 1, 61: 1, 49: 1, 42: 1, 25: 1}
+Deduped top 10:
+   1 0.8525 art=28 cnt=1 * | I ran Claude Code and Cursor together, and the combination does s
+   2 0.8000 art=61 cnt=1 | I tested Cursor?s top alternatives after Elon Musk?s SpaceX agree
+   3 0.7625 art=49 cnt=1 | I split my work across five Claude Code subagents and burned thro
+   4 0.7502 art=42 cnt=1 | Claude Code learns from my mistakes between sessions now, and my 
+   5 0.7430 art=25 cnt=1 | I used Claude Code to build a utility that fetches files by the w
+   6 0.7365 art=941 cnt=1 | Show HN: NanoEuler ? GPT-2 scale model in pure C/CUDA from scratc
+   7 0.7352 art=792 cnt=1 | Three more static code analysis sensors
+   8 0.7314 art=75 cnt=1 | Porting the Moebius 0.2B image inpainting model to run in the bro
+   9 0.7313 art=95 cnt=1 | Evaluating performance and efficiency of the GitHub Copilot agent
+  10 0.7286 art=37 cnt=1 | These open-source tools do what Claude charges for, and some do i
+  expected 28 deduped rank: 1
+
+========================================================================
+ID: open_webui_product | proper_noun | dedupe=True
+Q: What does the corpus say about Open WebUI?
+Current expected: [40]
+Top chunks by article count: {40: 1, 691: 1, 366: 1, 548: 1, 727: 1}
+Deduped top 10:
+   1 0.7769 art=40 cnt=1 * | I finally built the central AI hub I've been wanting, and Open We
+   2 0.7311 art=691 cnt=1 | Computer-Using Agent
+   3 0.7263 art=366 cnt=1 | Unrolling the Codex agent loop
+   4 0.7218 art=548 cnt=1 | OpenAI and Anthropic share findings from a joint safety evaluatio
+   5 0.7204 art=727 cnt=1 | Introducing canvas, a new way to write and code with ChatGPT.
+   6 0.7140 art=119 cnt=1 | Patch the Planet: a Daybreak initiative to support open source ma
+   7 0.7099 art=638 cnt=1 | BrowseComp: a benchmark for browsing agents
+   8 0.7059 art=67 cnt=1 | Quoting OpenAI
+   9 0.7057 art=333 cnt=1 | Why we no longer evaluate SWE-bench Verified
+  10 0.7055 art=701 cnt=1 | OpenAI o1 and new tools for developers
+  expected 40 deduped rank: 1
+
+========================================================================
+ID: chatgpt_free_tier | proper_noun | dedupe=True
+Q: What does the corpus say about ChatGPT free tier features?
+Current expected: [19]
+Top chunks by article count: {479: 1, 489: 1, 378: 1, 458: 1, 724: 1}
+Deduped top 10:
+   1 0.8038 art=479 cnt=1 | Strengthening ChatGPT?s responses in sensitive conversations
+   2 0.8036 art=489 cnt=1 | Introducing ChatGPT Atlas, the browser with ChatGPT built in
+   3 0.8024 art=378 cnt=1 | Introducing ChatGPT Go, now available worldwide
+   4 0.7982 art=458 cnt=1 | GPT-5.1: A smarter, more conversational ChatGPT
+   5 0.7979 art=724 cnt=1 | Evaluating fairness in ChatGPT
+   6 0.7892 art=558 cnt=1 | Introducing GPT-5 for developers
+   7 0.7884 art=411 cnt=1 | Introducing GPT-5.2
+   8 0.7844 art=718 cnt=1 | Introducing ChatGPT search
+   9 0.7838 art=460 cnt=1 | Free ChatGPT for transitioning U.S. servicemembers and veterans
+  10 0.7831 art=206 cnt=1 | How ChatGPT learns about the world while protecting privacy
+  expected 19 deduped rank: not in top
+
+========================================================================
+ID: anthropic_openai_safety_eval | proper_noun | dedupe=True
+Q: What does the corpus say about OpenAI and Anthropic safety evaluations?
+Current expected: [548]
+Top chunks by article count: {548: 1, 188: 1, 634: 1, 495: 1, 442: 1}
+Deduped top 10:
+   1 0.8686 art=548 cnt=1 * | OpenAI and Anthropic share findings from a joint safety evaluatio
+   2 0.8020 art=188 cnt=1 | Helping ChatGPT better recognize context in sensitive conversatio
+   3 0.7848 art=634 cnt=1 | Introducing OpenAI o3 and o4-mini
+   4 0.7834 art=495 cnt=1 | Defining and evaluating political bias in LLMs
+   5 0.7828 art=442 cnt=1 | Strengthening our safety ecosystem with external testing
+   6 0.7824 art=710 cnt=1 | OpenAI o1 System Card
+   7 0.7756 art=479 cnt=1 | Strengthening ChatGPT?s responses in sensitive conversations
+   8 0.7741 art=214 cnt=1 | Advancing youth safety and wellbeing in EMEA
+   9 0.7739 art=154 cnt=1 | Advancing youth safety and opportunity through global leadership
+  10 0.7729 art=473 cnt=1 | gpt-oss-safeguard technical report
+  expected 548 deduped rank: 1
+
+========================================================================
+ID: google_ai_ultra_pricing | proper_noun | dedupe=True
+Q: What does the corpus say about Google's AI Ultra pricing?
+Current expected: [3]
+Top chunks by article count: {3: 1, 741: 1, 840: 1, 976: 1, 955: 1}
+Deduped top 10:
+   1 0.8365 art=3 cnt=1 * | Google's $100 AI Ultra is still overpriced, and here's what I use
+   2 0.7581 art=741 cnt=1 | 100 things we announced at I/O 2026
+   3 0.7481 art=840 cnt=1 | Predictions for the Future of AI
+   4 0.7456 art=976 cnt=1 | AI Economy from the Bottom Up
+   5 0.7414 art=955 cnt=1 | Tokenmaxxing is dead, long live tokenmaxxing
+   6 0.7347 art=786 cnt=1 | Fragments: June 16
+   7 0.7338 art=797 cnt=1 | Fragments: May  5
+   8 0.7323 art=975 cnt=1 | Tech firms blame AI for rising PC and console prices
+   9 0.7284 art=747 cnt=1 | A new era for AI Search
+  10 0.7266 art=67 cnt=1 | Quoting OpenAI
+  expected 3 deduped rank: 1
+
+========================================================================
+ID: local_embedding_tradeoffs | near_miss | dedupe=True
+Q: What are the tradeoffs of local embedding models?
+Current expected: [40]
+Top chunks by article count: {722: 1, 797: 1, 707: 1, 902: 1, 941: 1}
+Deduped top 10:
+   1 0.7281 art=722 cnt=1 | Simplifying, stabilizing, and scaling continuous-time consistency
+   2 0.7263 art=797 cnt=1 | Fragments: May  5
+   3 0.7192 art=707 cnt=1 | Sora System Card
+   4 0.7144 art=902 cnt=1 | Our Research on Membership Inference Attacks and Preventing Priva
+   5 0.7095 art=941 cnt=1 | Show HN: NanoEuler ? GPT-2 scale model in pure C/CUDA from scratc
+   6 0.7001 art=95 cnt=1 | Evaluating performance and efficiency of the GitHub Copilot agent
+   7 0.6995 art=727 cnt=1 | Introducing canvas, a new way to write and code with ChatGPT.
+   8 0.6988 art=75 cnt=1 | Porting the Moebius 0.2B image inpainting model to run in the bro
+   9 0.6974 art=528 cnt=1 | Detecting and reducing scheming in AI models
+  10 0.6973 art=101 cnt=1 | Getting more from each token: How Copilot improves context handli
+  expected 40 deduped rank: not in top
+
+========================================================================
+ID: ai_agent_building_tools | near_miss | dedupe=True
+Q: What tools does the corpus recommend for building AI agents?
+Current expected: [659, 771]
+Top chunks by article count: {659: 1, 898: 1, 785: 1, 643: 1, 836: 1}
+Deduped top 10:
+   1 0.7934 art=659 cnt=1 * | New tools for building agents
+   2 0.7927 art=898 cnt=1 | Introducing a Recommended Agent in AI Chat, With Codex as the Cur
+   3 0.7841 art=785 cnt=1 | Building Reliable Agentic AI Systems
+   4 0.7780 art=643 cnt=1 | PaperBench: Evaluating AI?s Ability to Replicate AI Research
+   5 0.7623 art=836 cnt=1 | Toolkit for Your AI Scientists ? Rigorous, Auditable and Verifiab
+   6 0.7569 art=417 cnt=1 | OpenAI co-founds Agentic AI Foundation, donates AGENTS.md
+   7 0.7563 art=878 cnt=1 | Agents on a leash: Agentic AI remains mostly single-agent and mon
+   8 0.7555 art=502 cnt=1 | Introducing AgentKit, new Evals, and RFT for agents
+   9 0.7528 art=408 cnt=1 | BNY builds ?AI for everyone, everywhere? with OpenAI
+  10 0.7503 art=646 cnt=1 | Moving from intent-based bots to proactive AI agents
+  expected 659 deduped rank: 1
+  expected 771 deduped rank: not in top
+
+========================================================================
+ID: kubernetes_autoscaling | negative | dedupe=True
+Q: What does the corpus say about Kubernetes autoscaling?
+Current expected: []
+Top chunks by article count: {217: 1, 780: 1, 47: 1, 366: 1, 301: 1}
+Deduped top 10:
+   1 0.7408 art=217 cnt=1 | How OpenAI delivers low-latency voice AI at scale
+   2 0.7300 art=780 cnt=1 | Grab Builds Secure Agentic AI Workload Platform
+   3 0.7240 art=47 cnt=1 | I switched my local LLM setup to Ollama's new MLX engine, and my 
+   4 0.7177 art=366 cnt=1 | Unrolling the Codex agent loop
+   5 0.7137 art=301 cnt=1 | From model to agent: Equipping the Responses API with a computer 
+   6 0.7132 art=101 cnt=1 | Getting more from each token: How Copilot improves context handli
+   7 0.7081 art=965 cnt=1 | Monlite Simple Infrastructure for AI Agent
+   8 0.7079 art=811 cnt=1 | Context Anchoring
+   9 0.7076 art=548 cnt=1 | OpenAI and Anthropic share findings from a joint safety evaluatio
+  10 0.7049 art=247 cnt=1 | Codex for (almost) everything

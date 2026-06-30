@@ -1,0 +1,348 @@
+version: golden_v1
+corpus_version: baseline_2026_06_28
+description: >
+  Initial golden question set curated against the baseline_2026_06_28 corpus.
+  Expected article IDs were chosen from article titles and content matches.
+  Review and refine expected IDs after running the first retrieval eval.
+questions:
+  - id: home_server_laptops
+    question: What does the corpus say about using old laptops as home server upgrades?
+    category: direct_lookup
+    expected_article_ids: [1]
+    expected_terms: [laptop, home, server]
+    notes: >
+      Validated 2026-06-28 with limit=20, min_score=0, dedupe=false.
+      All 9 chunks from article 1 in top 9; article 1 is the only true answer.
+      Near-miss homelab articles rank below — do not add to expected set.
+
+  - id: open_webui_ai_hub
+    question: What article discusses building a central AI hub with Open WebUI?
+    category: direct_lookup
+    expected_article_ids: [40]
+    expected_terms: [open, webui, hub]
+    notes:  >
+      Validated 2026-06-28 with limit=20, min_score=0, dedupe=false.
+      All 7 chunks from article 40 in top 7; article 40 is the only true answer.
+      Near-miss general AI hub articles rank below — do not add to expected set.
+
+  - id: notebooklm_everything_notebook
+    question: What does the corpus say about using NotebookLM as an everything notebook?
+    category: direct_lookup
+    expected_article_ids: [11]
+    expected_terms: [notebooklm, notebook]
+    notes: >
+      Validated 2026-06-28, limit=20, min_score=0, dedupe=false.
+      Article 11 chunks dominate top; article 43 (self-hosted NotebookLM alt)
+      interspersed, sometimes above last chunks of 11 — related near-miss, not acceptable.
+
+  - id: figma_free_alternative
+    question: What free alternative to Figma is discussed in the corpus?
+    category: direct_lookup
+    expected_article_ids: [10]
+    expected_terms: [figma, alternative]
+    notes: >
+      Validated 2026-06-28, limit=20, min_score=0, dedupe=false.
+      Article 10 chunks dominate top; articles 330 and 574 (Figma related)
+      interspersed, sometimes above last chunks of 10 — related near-miss, not acceptable.
+
+  - id: local_vs_cloud_ai
+    question: What are the arguments for self-hosted or local AI tools instead of paid cloud services?
+    category: concept
+    expected_article_ids: [3, 37, 40, 43, 46, 47]
+    expected_terms: [local, self-hosted, cloud, paid]
+    notes: >
+      Hard concept eval case — keep question broad to measure retrieval improvement.
+      Validated 2026-06-29 with limit=20–100, min_score=0, dedupe=false/true.
+      Acceptable articles (consumer local/self-hosted AI vs paid cloud products):
+      3 Google AI Ultra overpriced; 37 open-source vs Claude pricing; 40 Open WebUI hub;
+      43 self-hosted NotebookLM; 46 Google NotebookLM integration criticism; 47 Ollama local LLM.
+      Baseline deduped-by-article ranks: 43=#4, 40=#18, 3=#29, 46=#48, 37=#59, 47=not in top 100.
+      Wrong topics crowd the top: 879 AI in production, 779 Slack multi-cloud AI serving,
+      887 cloud computing explainer, 45 self-hosted abandonment (counter-argument — not acceptable).
+      Do not add enterprise cloud/agent articles to expected set. Track MRR and Recall@10 over time.
+
+  - id: obsidian_bases
+    question: What does the corpus say about Obsidian Bases?
+    category: direct_lookup
+    expected_article_ids: [18]
+    expected_terms: [obsidian, bases]
+    notes:  >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=false.
+      All 8 chunks from article 18 in top 8; article 18 is the only true answer.
+      Far-miss general AI articles rank below — do not add to expected set.
+
+  - id: powertoys_monitor_brightness
+    question: What does the corpus say about PowerToys controlling monitor brightness?
+    category: direct_lookup
+    expected_article_ids: [13]
+    expected_terms: [powertoys, brightness, monitor]
+    notes:  >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=false.
+      All 8 chunks from article 13 in top 8; article 13 is the only true answer.
+      Far-miss general articles rank below — do not add to expected set.
+
+  - id: petg_functional_printing
+    question: What does the corpus recommend for functional 3D printing filament?
+    category: direct_lookup
+    expected_article_ids: [5]
+    expected_terms: [petg, filament, printing]
+    notes:  >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=false.
+      All 10 chunks from article 5 in top 10; article 5 is the only true answer.
+      Far-miss general articles rank below — do not add to expected set.
+
+  - id: self_hosted_notebooklm
+    question: What self-hosted alternatives to NotebookLM are discussed?
+    category: concept
+    expected_article_ids: [43]
+    expected_terms: [notebooklm, self-hosted]
+    notes:  >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=false.
+      All 10 chunks from article 43 in top 10; article 43 is the only true answer.
+      Near-miss NotebookLM articles rank below — do not add to expected set.
+
+  - id: voice_first_ai_products
+    question: How do companies build voice-first AI products according to the corpus?
+    category: concept
+    expected_article_ids: [388, 201, 202, 545, 595, 597, 630, 654]
+    expected_terms: [voice, ai, product, agent, audio]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      Primary answer: 388 (Tolan voice-first AI) at rank 1.
+      Wide acceptable set: top voice/conversational-agent articles in the corpus
+      (Parloa service agents, OpenAI audio/Realtime API posts, Speak, GPT-4o voice agents).
+      Related agent articles in top 10 (e.g. 227 Choco, 646 proactive agents, 284 bank bots)
+      are conversational AI but not voice-first product builds — not acceptable.
+      Track MRR (388 should stay rank 1) and Recall@5 as retrieval improves.
+
+  - id: quantum_computing_breakthroughs
+    question: What does the corpus say about quantum computing breakthroughs?
+    category: negative
+    expected_article_ids: []
+    expected_terms: [quantum, computing]
+    notes: >
+      Negative control — no on-topic quantum computing content in corpus (6 articles
+      mention "quantum" tangentially; none about breakthroughs).
+      Validated 2026-06-29: top hit art=339 theoretical physics at score ~0.74;
+      results scatter across AI research/eval articles — false-positive cluster.
+      Success = low scores OR results clearly off-topic; failure = confident
+      quantum-specific hits. Production min_score=0.6 would still pass top result.
+
+  - id: sqlite_fts5_setup
+    question: What does the corpus say about SQLite FTS5 full-text search setup?
+    category: negative
+    expected_article_ids: []
+    expected_terms: [sqlite, fts5, full-text]
+    notes: >
+      Negative control — no FTS5 setup guide in corpus (1 article mentions fts5
+      tangentially; 10 mention sqlite, mostly Simon Willison sqlite-utils/datasette).
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      Top hit art=785 agentic AI systems (score ~0.73) — false positive, not SQLite.
+      Near-misses: 76/77 sqlite-utils, 72 datasette (sqlite ecosystem, not FTS5 setup);
+      965 Monlite mentions fts5 at rank 2 but is not a setup article.
+      Do not add sqlite-utils articles to expected set. Track max score and false-positive
+      rate; production min_score=0.6 would still pass top result.
+
+  - id: zigbee_mesh_repeaters
+    question: What advice does the corpus give about Zigbee mesh networks?
+    category: direct_lookup
+    expected_article_ids: [9]
+    expected_terms: [zigbee, mesh, repeater]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=false.
+      Article 9 chunks dominate top (8 of top 16); deduped rank 1 at score ~0.79.
+      Near-miss art=33 (Zigbee battery problem) ranks #2 — related smart-home, not repeater advice.
+      Art=27 mesh-over-Wi-Fi ranks #3 — do not add to expected set.
+
+  - id: proton_drive_linux
+    question: What does the corpus say about Proton Drive improvements for Linux users?
+    category: direct_lookup
+    expected_article_ids: [20]
+    expected_terms: [proton, drive, linux]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=false.
+      Article 20 at deduped rank 1 (score ~0.83); 3 chunks in top results.
+      Near-miss art=35 (Fedora Atomic Linux desktop) ranks #2 — Linux topic, not Proton Drive.
+      Do not add to expected set.
+
+  - id: rtx_50_series
+    question: What does the corpus say about the RTX 50 series?
+    category: direct_lookup
+    expected_article_ids: [30]
+    expected_terms: ["rtx", "50"]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=false.
+      Article 30 dominates top (12 chunks); deduped rank 1 at score ~0.77.
+      Near-miss GPU articles (898 Codex agent, 24 mid-range GPUs, 21 AMD AI laptop) rank below.
+
+  - id: chromebook_windows_95
+    question: What does the corpus say about making a Chromebook look like Windows 95?
+    category: direct_lookup
+    expected_article_ids: [29]
+    expected_terms: ["chromebook", "windows", "95"]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=false.
+      Article 29 at deduped rank 1 (score ~0.82); 6 chunks in top results.
+      Near-miss art=23 (Windows 95 Virtual OS Museum) ranks #2 — nostalgic Windows 95, not Chromebook hack.
+
+  - id: home_lab_simplicity
+    question: What does the corpus say about simplifying a home lab?
+    category: direct_lookup
+    expected_article_ids: [15]
+    expected_terms: [home, lab, hardware]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=false.
+      Hard direct-lookup case: article 15 at deduped rank 3 (score ~0.70), not rank 1.
+      Wrong tops: art=301 (OpenAI Responses API agents), art=288 (Model Spec) — AI product posts, not homelab.
+      Article 15 is the only true answer; track MRR improvement over time.
+
+  - id: prompt_injection_defense
+    question: What does the corpus say about defending against prompt injection attacks?
+    category: concept
+    expected_article_ids: [461, 392, 300, 304, 19, 340]
+    expected_terms: [prompt, injection, defense]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      Wide acceptable set — frontier security and product-defense articles on prompt injection.
+      Top ranks: 461 (understanding prompt injections), 392 (ChatGPT Atlas hardening),
+      300 (agents resist injection), 304 (instruction hierarchy), 340 (Lockdown Mode).
+      Scaffold art=19 (ChatGPT Free prompt-injection defense) at deduped rank 8 — acceptable but not primary.
+      Track Recall@5 and MRR; enterprise agent posts (587, 690) in top 10 are near-misses.
+
+  - id: open_source_alternatives
+    question: What open source software alternatives are discussed in the corpus?
+    category: concept
+    expected_article_ids: [10, 22, 37, 43]
+    expected_terms: [open, source, alternative]
+    notes: >
+      Validated 2026-06-29 with limit=20–100, min_score=0, dedupe=true.
+      Hard concept case — query is broad; enterprise "open source" posts crowd the top
+      (307 Codex Security, 119 Patch the Planet, 98 inclusive OSS, 613 Codex).
+      Acceptable consumer alternative articles: 37 open-source vs Claude (#8), 43 self-hosted NotebookLM (#14),
+      10 Figma alternative (#28), 22 Organic Maps (#93).
+      Scaffold art=22 alone misses the mark at top-20; keep wide set. Track Recall@10.
+
+  - id: copilot_productivity_workflows
+    question: What does the corpus say about using Copilot in productivity workflows?
+    category: concept
+    expected_article_ids: [34, 95, 101, 104, 105]
+    expected_terms: [copilot, presentation, workflow]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      GitHub Copilot engineering posts rank 1–5 (95 eval, 101 context, 104 MAI-Code, 105 code review).
+      Primary consumer answer art=34 (Claude Design + Copilot presentation workflow) at deduped rank 8.
+      Both angles are acceptable for this broad question. Track MRR for art=34.
+
+  - id: ollama_local_llm
+    question: What does the corpus say about Ollama?
+    category: proper_noun
+    expected_article_ids: [47]
+    expected_terms: [ollama, mlx]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      Article 47 at deduped rank 1 (score ~0.72). Only Ollama-specific article in corpus.
+      Far-miss OpenAI eval/system-card articles rank below — do not add to expected set.
+
+  - id: claude_code_usage
+    question: What does the corpus say about Claude Code?
+    category: proper_noun
+    expected_article_ids: [42, 25, 28, 49, 61, 953]
+    expected_terms: [claude, code]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      Multiple XDA Claude Code articles; wide acceptable set.
+      Deduped ranks: 42=#2, 25=#7, 49=#9, 28=#10, 61=#6, 953=#5.
+      Wrong top hit art=801 (Fragments newsletter) — not Claude Code; do not add.
+      Art=6 (Claude Design) is adjacent tooling, not Claude Code — exclude.
+
+  - id: cursor_with_claude_code
+    question: What does the corpus say about running Claude Code and Cursor together?
+    category: proper_noun
+    expected_article_ids: [28]
+    expected_terms: [cursor, claude, code]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      Article 28 at deduped rank 1 (score ~0.85) — clear winner.
+      Near-miss art=61 (Cursor alternatives) and art=49 (Claude Code subagents) rank #2–3.
+
+  - id: open_webui_product
+    question: What does the corpus say about Open WebUI?
+    category: proper_noun
+    expected_article_ids: [40]
+    expected_terms: [open, webui]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      Article 40 at deduped rank 1 (score ~0.78). Only Open WebUI article in corpus.
+      Far-miss OpenAI product posts rank below.
+
+  - id: chatgpt_free_tier
+    question: What does the corpus say about ChatGPT free tier features?
+    category: proper_noun
+    expected_article_ids: [19, 378, 445, 460]
+    expected_terms: [chatgpt, free]
+    notes: >
+      Validated 2026-06-29 with limit=20–50, min_score=0, dedupe=true.
+      Hard proper-noun case — general ChatGPT product posts crowd the top (479, 489, 458, 724).
+      Acceptable free-tier-specific articles: 378 ChatGPT Go (#3), 460 free for servicemembers (#9),
+      445 free for teachers (#12), 19 Free-user prompt-injection defense (#35).
+      Track Recall@10; none of the acceptable articles rank #1 at baseline.
+
+  - id: anthropic_openai_safety_eval
+    question: What does the corpus say about OpenAI and Anthropic safety evaluations?
+    category: proper_noun
+    expected_article_ids: [548]
+    expected_terms: [anthropic, openai, safety]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      Article 548 at deduped rank 1 (score ~0.87) — joint safety evaluation post.
+      Related safety articles (442, 473, 710) rank below but are different topics.
+
+  - id: google_ai_ultra_pricing
+    question: What does the corpus say about Google's AI Ultra pricing?
+    category: proper_noun
+    expected_article_ids: [3]
+    expected_terms: [google, ai, ultra, pricing]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      Article 3 at deduped rank 1 (score ~0.84). Only Google AI Ultra pricing critique in corpus.
+      Near-miss art=741 (I/O 2026 roundup) ranks #2.
+
+  - id: local_embedding_tradeoffs
+    question: What are the tradeoffs of local embedding models?
+    category: near_miss
+    expected_article_ids: []
+    expected_terms: [embedding, local]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      No on-topic local embedding tradeoff article in corpus (scaffold art=40 Open WebUI was wrong).
+      Top hits are unrelated AI research (722 consistency models, 902 membership inference, 707 Sora).
+      Expected local-LLM near-misses (47 Ollama, 40 Open WebUI) do not appear in top 20 either.
+      Track false-positive rate and max score (~0.73); success = no confident embedding-specific hits.
+
+  - id: ai_agent_building_tools
+    question: What tools does the corpus recommend for building AI agents?
+    category: near_miss
+    expected_article_ids: [659, 898, 785, 643, 836, 417, 878, 502, 408, 646]
+    expected_terms: [agent, tools, building]
+    notes: >
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      Broad agent-tooling question; top 10 are on-topic OpenAI/InfoQ agent posts.
+      Primary: 659 (New tools for building agents) at rank 1.
+      Scaffold art=771 (Vercel Eve framework) at deduped rank 43 — acceptable but outside top 20.
+      Watch for coding-agent near-misses (366 Codex loop, 247 Codex everything) in top 20.
+
+  - id: kubernetes_autoscaling
+    question: What does the corpus say about Kubernetes autoscaling?
+    category: negative
+    expected_article_ids: []
+    expected_terms: [kubernetes, autoscaling]
+    notes: >
+      Negative control — no Kubernetes autoscaling content in corpus.
+      Validated 2026-06-29 with limit=20, min_score=0, dedupe=true.
+      Top hit art=217 (OpenAI low-latency voice AI at scale) at score ~0.74 — false positive.
+      Results scatter across agent/infrastructure AI posts (780, 965 Monlite, 301).
+      Success = low scores OR clearly off-topic; production min_score=0.6 would still pass top result.
+
+
+
+

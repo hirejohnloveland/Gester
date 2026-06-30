@@ -5,6 +5,10 @@ from qdrant_client.models import Distance
 from sqlalchemy.orm import sessionmaker
 
 from gester.application.evaluation.evaluation_corpus_service import EvaluationCorpusService
+from gester.application.evaluation.golden_question_service import (
+    GoldenQuestionService,
+    GoldenQuestionValidationResult,
+)
 from gester.application.content.source_item_chunk_query_service import SourceItemChunkQueryService
 from gester.application.content.source_item_query_service import SourceItemQueryService
 from gester.application.ingestion.chunk_embedding_service import ChunkEmbeddingService
@@ -19,6 +23,7 @@ from gester.infrastructure.extraction.article_extractor import ArticleExtractor
 from gester.infrastructure.feeds.rss_reader import RssReader
 from gester.infrastructure.llm.ollama_client import OllamaClient
 from gester.infrastructure.storage.eval.eval_corpus_file_store import EvalCorpusFileStore
+from gester.infrastructure.storage.eval.golden_question_file_store import GoldenQuestionFileStore
 from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
 from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
 from gester.infrastructure.storage.vector.qdrant_vector_store import QdrantVectorStore
@@ -208,4 +213,18 @@ def get_evaluation_corpus_service(
         source_item_repository=source_item_repository,
         chunk_repository=chunk_repository,
         corpus_file_store=corpus_file_store,
+    )
+
+
+def get_golden_question_file_store(settings: SettingsDep) -> GoldenQuestionFileStore:
+    return GoldenQuestionFileStore(settings.golden_questions_path)
+
+
+def get_golden_question_service(
+    question_file_store: Annotated[GoldenQuestionFileStore, Depends(get_golden_question_file_store)],
+    corpus_service: Annotated[EvaluationCorpusService, Depends(get_evaluation_corpus_service)],
+) -> GoldenQuestionService:
+    return GoldenQuestionService(
+        question_file_store=question_file_store,
+        corpus_service=corpus_service,
     )

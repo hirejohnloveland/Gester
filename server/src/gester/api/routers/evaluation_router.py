@@ -2,11 +2,19 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from gester.api.dependencies import get_evaluation_corpus_service
+from gester.api.dependencies import get_evaluation_corpus_service, get_golden_question_service
 from gester.application.evaluation.evaluation_corpus_service import EvaluationCorpusService
+from gester.application.evaluation.golden_question_service import (
+    GoldenQuestionService,
+    GoldenQuestionValidationResult,
+)
 from gester.application.responses.evaluation_corpus_response import (
     EvaluationCorpusDetailResponse,
     EvaluationCorpusSummaryResponse,
+)
+from gester.application.responses.golden_question_response import (
+    GoldenQuestionResponse,
+    GoldenQuestionSetResponse,
 )
 
 router = APIRouter(prefix="/eval", tags=["evaluation"])
@@ -47,3 +55,43 @@ def get_corpus(
         raise HTTPException(status_code=400, detail=str(error)) from error
 
     return EvaluationCorpusDetailResponse.from_corpus(corpus)
+
+
+@router.get("/questions", response_model=GoldenQuestionSetResponse)
+def get_questions(
+    service: Annotated[GoldenQuestionService, Depends(get_golden_question_service)],
+):
+    try:
+        question_set = service.load_questions()
+    except FileNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+
+    return GoldenQuestionSetResponse.from_question_set(question_set)
+
+
+@router.get("/questions/validate", response_model=GoldenQuestionValidationResult)
+def validate_questions(
+    corpus_version: str,
+    service: Annotated[GoldenQuestionService, Depends(get_golden_question_service)],
+):
+    try:
+        return service.validate_against_corpus(corpus_version)
+    except FileNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+
+
+@router.get("/questions/{question_id}", response_model=GoldenQuestionResponse)
+def get_question(
+    question_id: str,
+    service: Annotated[GoldenQuestionService, Depends(get_golden_question_service)],
+):
+    try:
+        question = service.get_question(question_id)
+    except FileNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except KeyError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+
+    return GoldenQuestionResponse.from_question(question)

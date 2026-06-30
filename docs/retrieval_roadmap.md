@@ -112,7 +112,13 @@ The same query against the same corpus and configuration should produce the same
 
 ---
 
-## Milestone 1.2 - Create a Golden Question Set — Not started
+## Milestone 1.2 - Create a Golden Question Set — Complete
+
+_Done: `config/eval/golden_questions.yaml` holds 30 curated questions with
+expected article IDs, categories (direct lookup, concept, proper noun,
+near miss, negative), and optional terms/notes. `GET /eval/questions`
+loads the set; `GET /eval/questions/validate?corpus_version=...` checks
+IDs against a frozen corpus._
 
 ### Purpose
 
@@ -2027,7 +2033,7 @@ no_good_answer_in_corpus
 
 ```text
 1. Freeze the current corpus                              — Complete
-2. Create 25–50 golden questions                          — Not started
+2. Create 25–50 golden questions                          — Complete
 3. Build eval-retrieval command                           — Not started
 4. Save top-k retrieval results                           — Not started
 5. Add failure classification                           — Not started
@@ -2076,7 +2082,7 @@ Gester’s retrieval system should be considered meaningfully improved when:
 
 ```text
 - A fixed evaluation corpus exists                              — Complete
-- A golden question set exists                                    — Not started
+- A golden question set exists                                    — Complete
 - Retrieval quality can be measured repeatedly                    — Not started
 - Retrieval failures can be classified                            — Not started
 - Chunking strategies have been compared                          — In progress

@@ -59,6 +59,7 @@ ADR-0005).
 Gester/
 ├── agents/              # AI coding assistant instructions (this file)
 ├── config/              # Application configuration
+│   └── eval/            # Golden question sets for retrieval evaluation
 ├── data/                # Local runtime data (SQLite, Qdrant)
 ├── docs/
 │   ├── adr/             # Architecture Decision Records

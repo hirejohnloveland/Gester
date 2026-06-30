@@ -92,5 +92,9 @@ class AppSettings(BaseModel):
         return self.data_dir / "eval" / "corpora"
 
     @property
+    def golden_questions_path(self) -> Path:
+        return self.project_root / "config" / "eval" / "golden_questions.yaml"
+
+    @property
     def enabled_feeds(self) -> list[FeedSourceSettings]:
         return [feed for feed in self.feeds if feed.enabled]
