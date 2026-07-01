@@ -45,6 +45,23 @@ class RetrievalSettings(BaseModel):
     dedupe_by_article: bool
 
 
+class EvalRetrievalSettings(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    limit: int = Field(default=10, gt=0)
+    min_score: float = Field(default=0.0, ge=0)
+    dedupe_by_article: bool = False
+    recall_k_values: list[int] = Field(default_factory=lambda: [3, 5, 10])
+    chunk_text_preview_length: int = Field(default=200, gt=0)
+    retrieval_strategy: str = "vector_search"
+
+
+class EvalSettings(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    retrieval: EvalRetrievalSettings = Field(default_factory=EvalRetrievalSettings)
+
+
 class IngestionSettings(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -73,6 +90,7 @@ class AppSettings(BaseModel):
     vector_store: VectorStoreSettings
     llm: LlmSettings
     retrieval: RetrievalSettings
+    eval: EvalSettings = Field(default_factory=EvalSettings)
     logging: LoggingSettings
 
     @property
@@ -90,6 +108,10 @@ class AppSettings(BaseModel):
     @property
     def eval_corpora_dir(self) -> Path:
         return self.data_dir / "eval" / "corpora"
+
+    @property
+    def eval_runs_dir(self) -> Path:
+        return self.data_dir / "eval" / "runs"
 
     @property
     def golden_questions_path(self) -> Path:

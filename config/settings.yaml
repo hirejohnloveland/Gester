@@ -144,6 +144,15 @@ retrieval:
   min_score: 0.6
   dedupe_by_article: true
 
+eval:
+  retrieval:
+    limit: 10
+    min_score: 0
+    dedupe_by_article: false
+    recall_k_values: [3, 5, 10]
+    chunk_text_preview_length: 200
+    retrieval_strategy: vector_search
+
 logging:
   level: INFO
   retention_days: 14

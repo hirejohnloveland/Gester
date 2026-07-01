@@ -112,6 +112,7 @@ Use-case orchestration. Coordinates domain models and infrastructure.
 
 Current examples: `RssIngestionService`, `SourceItemChunkingService`,
 `ChunkEmbeddingService`, `SearchService`, `AnswerService`,
+`EvaluationCorpusService`, `GoldenQuestionService`, `RetrievalEvalService`,
 `SourceItemQueryService`, `SourceItemChunkQueryService`.
 
 ### infrastructure
@@ -133,7 +134,8 @@ applies `GESTER_*` environment overrides, and validates. See ADR-0011.
 
 Configuration files for models, sources, and runtime settings. The
 committed `settings.yaml` holds non-secret defaults (feeds, paths,
-ingestion, chunking, embedding, vector store, LLM, retrieval, logging);
+ingestion, chunking, embedding, vector store, LLM, retrieval, eval,
+logging);
 environment variables override deploy-specific values. The `ingestion`
 section bounds how many RSS entries are ingested per feed
 (`max_age_days`, `max_items_per_feed`), with optional per-feed overrides.

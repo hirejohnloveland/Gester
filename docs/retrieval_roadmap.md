@@ -39,7 +39,7 @@ The purpose of this roadmap is to make retrieval quality observable, testable, a
 ## Status Legend
 
 Status reflects implementation verified against the codebase as of
-2026-06-28, mapping each milestone's "Done When" criteria to working
+2026-06-30, mapping each milestone's "Done When" criteria to working
 code.
 
 -   **Complete** — all material "Done When" criteria are met in code
@@ -49,12 +49,13 @@ code.
 Current position: vector search, article deduplication, metadata-enriched
 embeddings (title + URL), and grounded `/ask` responses with citations
 are working. Configurable fixed-size chunking and staged re-chunk/re-embed
-endpoints exist. **No evaluation harness, golden questions, or corpus
-versioning yet** — Phase 1 is the immediate next work.
+endpoints exist. **Phase 1 retrieval evaluation** (frozen corpus, golden
+questions, batch eval run) is complete — Phase 2 baseline inspection is
+next.
 
 ---
 
-# Phase 1 - Retrieval Evaluation Foundation — In progress
+# Phase 1 - Retrieval Evaluation Foundation — Complete
 
 ## Purpose
 
@@ -201,7 +202,7 @@ For this question, these are the sources I expected Gester to retrieve.
 
 ---
 
-## Milestone 1.3 - Build the Retrieval Evaluation Command — Not started
+## Milestone 1.3 - Build the Retrieval Evaluation Command — Complete
 
 ### Purpose
 
@@ -209,13 +210,27 @@ Create a command that runs retrieval tests and saves results.
 
 ### Implementation
 
-Add a command such as:
+Run retrieval evaluation over HTTP:
 
 ```bash
-python app.py eval-retrieval
+POST /eval/retrieval/run?corpus_version=baseline_2026_06_28
 ```
 
-The command should:
+Optional query params: `limit`, `min_score`, `dedupe_by_article`, `question_ids` (repeatable).
+
+Eval defaults live in `config/settings.yaml` under `eval.retrieval` (`limit=10`,
+`min_score=0`, `dedupe_by_article=false`, `recall_k_values: [3, 5, 10]`).
+
+Saved runs:
+
+```bash
+GET /eval/retrieval/runs
+GET /eval/retrieval/runs/{run_id}
+```
+
+Reports are written to `data/eval/runs/{run_id}.json`.
+
+The workflow:
 
 * Load the golden question set
 * Run each question through the retrieval pipeline
@@ -247,6 +262,12 @@ chunking_strategy
 ```
 
 ### Done When
+
+_Done: `POST /eval/retrieval/run` runs all golden questions against a frozen
+corpus using eval defaults from `config/settings.yaml`; reports Recall@3/5/10,
+MRR, and expected-article/chunk flags per question; saves detailed JSON reports
+to `data/eval/runs/`. `GET /eval/retrieval/runs` and `GET /eval/retrieval/runs/{run_id}`
+load saved runs._
 
 * The eval command runs all golden questions.
 * Results are saved to disk.

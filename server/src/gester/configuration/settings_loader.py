@@ -77,5 +77,6 @@ def load_settings() -> AppSettings:
         vector_store=data.get("vector_store", {}),
         llm=llm_section,
         retrieval=data.get("retrieval", {}),
+        eval=data.get("eval", {}),
         logging=data.get("logging", {}),
     )

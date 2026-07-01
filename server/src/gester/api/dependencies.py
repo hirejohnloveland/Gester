@@ -9,6 +9,7 @@ from gester.application.evaluation.golden_question_service import (
     GoldenQuestionService,
     GoldenQuestionValidationResult,
 )
+from gester.application.evaluation.retrieval_eval_service import RetrievalEvalService
 from gester.application.content.source_item_chunk_query_service import SourceItemChunkQueryService
 from gester.application.content.source_item_query_service import SourceItemQueryService
 from gester.application.ingestion.chunk_embedding_service import ChunkEmbeddingService
@@ -23,6 +24,7 @@ from gester.infrastructure.extraction.article_extractor import ArticleExtractor
 from gester.infrastructure.feeds.rss_reader import RssReader
 from gester.infrastructure.llm.ollama_client import OllamaClient
 from gester.infrastructure.storage.eval.eval_corpus_file_store import EvalCorpusFileStore
+from gester.infrastructure.storage.eval.eval_run_file_store import EvalRunFileStore
 from gester.infrastructure.storage.eval.golden_question_file_store import GoldenQuestionFileStore
 from gester.infrastructure.storage.sqlite.source_item_chunk_repository import SourceItemChunkRepository
 from gester.infrastructure.storage.sqlite.source_item_repository import SourceItemRepository
@@ -227,4 +229,24 @@ def get_golden_question_service(
     return GoldenQuestionService(
         question_file_store=question_file_store,
         corpus_service=corpus_service,
+    )
+
+
+def get_eval_run_file_store(settings: SettingsDep) -> EvalRunFileStore:
+    return EvalRunFileStore(settings.eval_runs_dir)
+
+
+def get_retrieval_eval_service(
+    settings: SettingsDep,
+    search_service: Annotated[SearchService, Depends(get_search_service)],
+    golden_question_service: Annotated[GoldenQuestionService, Depends(get_golden_question_service)],
+    corpus_service: Annotated[EvaluationCorpusService, Depends(get_evaluation_corpus_service)],
+    run_file_store: Annotated[EvalRunFileStore, Depends(get_eval_run_file_store)],
+) -> RetrievalEvalService:
+    return RetrievalEvalService(
+        settings=settings,
+        search_service=search_service,
+        golden_question_service=golden_question_service,
+        corpus_service=corpus_service,
+        run_file_store=run_file_store,
     )

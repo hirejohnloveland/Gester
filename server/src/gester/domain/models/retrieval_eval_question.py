@@ -24,7 +24,7 @@ class RetrievalEvalQuestion(BaseModel):
 
     @model_validator(mode="after")
     def validate_expected_targets(self) -> "RetrievalEvalQuestion":
-        if self.category == QuestionCategory.NEGATIVE:
+        if self.category in (QuestionCategory.NEGATIVE, QuestionCategory.NEAR_MISS):
             return self
 
         if not self.expected_article_ids and not self.expected_chunk_ids:
